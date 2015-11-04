@@ -17,7 +17,7 @@ namespace AspNetIdentity.WebApi.Controllers
     public class AccountsController : BaseApiController
     {
 
-        [Authorize(Roles="Admin")]
+        [Authorize(Roles = "Admin")]
         [Route("users")]
         public IHttpActionResult GetUsers()
         {
@@ -57,6 +57,32 @@ namespace AspNetIdentity.WebApi.Controllers
 
             return NotFound();
 
+        }
+
+        [AllowAnonymous]
+        [Route("login")]
+        [HttpPost]
+        public async Task<IHttpActionResult> Login(LoginUserBindingModel loginUserModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            ApplicationUser lookup = AppUserManager.Find(loginUserModel.UserName, loginUserModel.Password);
+
+            
+
+            HttpResponseMessage result = null;
+            if (lookup != null && lookup.EmailConfirmed)
+            {
+                result = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+            }
+            else
+            {
+                result = new HttpResponseMessage(System.Net.HttpStatusCode.Forbidden);
+            }
+
+            return ResponseMessage(result);
         }
 
         [AllowAnonymous]
@@ -166,10 +192,10 @@ namespace AspNetIdentity.WebApi.Controllers
             }
 
             return NotFound();
-          
+
         }
 
-        [Authorize(Roles="Admin")]
+        [Authorize(Roles = "Admin")]
         [Route("user/{id:guid}/roles")]
         [HttpPut]
         public async Task<IHttpActionResult> AssignRolesToUser([FromUri] string id, [FromBody] string[] rolesToAssign)
@@ -181,12 +207,13 @@ namespace AspNetIdentity.WebApi.Controllers
             {
                 return NotFound();
             }
-            
+
             var currentRoles = await this.AppUserManager.GetRolesAsync(appUser.Id);
 
             var rolesNotExists = rolesToAssign.Except(this.AppRoleManager.Roles.Select(x => x.Name)).ToArray();
 
-            if (rolesNotExists.Count() > 0) {
+            if (rolesNotExists.Count() > 0)
+            {
 
                 ModelState.AddModelError("", string.Format("Roles '{0}' does not exixts in the system", string.Join(",", rolesNotExists)));
                 return BadRequest(ModelState);
@@ -215,14 +242,15 @@ namespace AspNetIdentity.WebApi.Controllers
         [Authorize(Roles = "Admin")]
         [Route("user/{id:guid}/assignclaims")]
         [HttpPut]
-        public async Task<IHttpActionResult> AssignClaimsToUser([FromUri] string id, [FromBody] List<ClaimBindingModel> claimsToAssign) {
+        public async Task<IHttpActionResult> AssignClaimsToUser([FromUri] string id, [FromBody] List<ClaimBindingModel> claimsToAssign)
+        {
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-             var appUser = await this.AppUserManager.FindByIdAsync(id);
+            var appUser = await this.AppUserManager.FindByIdAsync(id);
 
             if (appUser == null)
             {
@@ -231,14 +259,15 @@ namespace AspNetIdentity.WebApi.Controllers
 
             foreach (ClaimBindingModel claimModel in claimsToAssign)
             {
-                if (appUser.Claims.Any(c => c.ClaimType == claimModel.Type)) {
-                   
+                if (appUser.Claims.Any(c => c.ClaimType == claimModel.Type))
+                {
+
                     await this.AppUserManager.RemoveClaimAsync(id, ExtendedClaimsProvider.CreateClaim(claimModel.Type, claimModel.Value));
                 }
 
                 await this.AppUserManager.AddClaimAsync(id, ExtendedClaimsProvider.CreateClaim(claimModel.Type, claimModel.Value));
             }
-            
+
             return Ok();
         }
 
