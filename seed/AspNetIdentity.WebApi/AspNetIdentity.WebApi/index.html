@@ -15,6 +15,12 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- PACE.JS -->
     <script src="js/lib/pace.min.js"></script>
+    <script src="js/angular-route.min.js"></script>
+    <script src="js/angular-moment.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/rest.js"></script>
+    <script src="js/controllers/register.js"></script>
+    <script src="js/services/user.js"></script>
     <link href="css/lib/font-awesome.min.css" rel="stylesheet">
     <!-- STYLE CSS -->
     <link href="css/styles.css" rel="stylesheet">
@@ -29,43 +35,12 @@
 
     <script>
 
-        var postApp = angular.module('postApp', []);
-        postApp.controller('postController', function ($scope, $http) {
-            $scope.user = {};
-            $scope.submitForm = function () {
-                $scope.errorPassword = null;
-                $scope.errorEmail = null;
-                $scope.errorUserName = null;
-                $scope.createConfirm = null;
-                $http({
-                    method: 'POST',
-                    url: 'http://jv.com/api/accounts/create',
-                    data: JSON.stringify($scope.user),
-                    headers: { 'Content-Type': 'application/json' }
-
-                })
-                .success(function (data) {
-                    $scope.createConfirm = "Welcome, your user has been created: " + data.userName;
-                 }
-                ).error(function (err) {
-                    if (err.modelState["createUserModel.Password"] && err.modelState["createUserModel.Password"].length > 0) {
-                        $scope.errorPassword = err.modelState["createUserModel.Password"][0];
-                        // TODO more model state errors out to the UI here
-                    }
-
-                    if (err.modelState[0] && angular.isArray(err.modelState[0])) {
-                        var msg = err.modelState[0][0];
-                        $scope.errorPassword = msg;
-                    }
-                })
-            };
-            }    
-        );
+        
 
     </script>
 </head>
 
-<body ng-app="postApp" ng-controller="postController" data-spy="scroll" data-target="#navbar">
+<body ng-app="jvmarket"  data-spy="scroll" data-target="#navbar">
     <div id="lazyload"></div>
     <!-- BEGIN Navbar -->
     <nav id="navbars" class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -232,39 +207,10 @@
                                         <!-- Contact details -->
                                         <div class="row">
                                             <div class="col-lg-6">
-                                                <form class="contact-form" ng-submit="submitForm()" novalidate="" id="contactForm">
-                                                    <div class="col-lg-12">
-                                                        <div class="row">
-                                                            <div class="col-lg-6">
-                                                                <input type="text" class="form-control" placeholder="Your First Name" ng-model="user.FirstName">
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <input type="text" class="form-control" placeholder="Your Last Name" ng-model="user.LastName">
-                                                            </div>
-                                                            <div class="col-lg-6">
-                                                                <input type="text" class="form-control" placeholder="Email" ng-model="user.Email">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-lg-12">
-                                                                <input type="text" class="form-control" placeholder="User name" ng-model="user.UserName">
-                                                            </div>
-                                                            <div class="col-lg-12">
-                                                                <input type="password" class="form-control" placeholder="Password" ng-model="user.Password">
-                                                            </div>
-                                                            <div class="col-lg-12">
-                                                                <input type="password" class="form-control" placeholder="Confirm password" ng-model="user.ConfirmPassword">
-                                                            </div>
-                                                     
-                                                            <button class="button button-white-side">Sign up</button>
-                                                            <br/>
-                                                            <span ng-show="createConfirm">{{createConfirm}}</span>
-                                                            <span ng-show="errorPassword">{{errorPassword}}</span>
-                                                            <span ng-show="errorUserName">{{errorUserName}}</span>
-                                                            <span ng-show="errorEmail">{{errorEmail}}</span>
-                                                        </div>
-                                                    </div>
-                                                </form>
+                                                <div class="app-body">
+                                                    <div ng-cloak ng-view=""></div>
+                                                </div>
+
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="bio">

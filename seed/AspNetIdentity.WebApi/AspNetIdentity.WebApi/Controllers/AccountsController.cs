@@ -59,32 +59,7 @@ namespace AspNetIdentity.WebApi.Controllers
 
         }
 
-        [AllowAnonymous]
-        [Route("login")]
-        [HttpPost]
-        public async Task<IHttpActionResult> Login(LoginUserBindingModel loginUserModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            ApplicationUser lookup = AppUserManager.Find(loginUserModel.UserName, loginUserModel.Password);
-
-            
-
-            HttpResponseMessage result = null;
-            if (lookup != null && lookup.EmailConfirmed)
-            {
-                result = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
-            }
-            else
-            {
-                result = new HttpResponseMessage(System.Net.HttpStatusCode.Forbidden);
-            }
-
-            return ResponseMessage(result);
-        }
-
+      
         [AllowAnonymous]
         [Route("create")]
         public async Task<IHttpActionResult> CreateUser(CreateUserBindingModel createUserModel)

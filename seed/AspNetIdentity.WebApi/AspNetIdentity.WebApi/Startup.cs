@@ -40,16 +40,15 @@ namespace AspNetIdentity.WebApi
             // Configure the db context and user manager to use a single instance per request
            // app.CreatePerOwinContext(ApplicationDbContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
-            app.CreatePerOwinContext<ApplicationRoleManager>(ApplicationRoleManager.Create);
 
             OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
             {
                 //For Dev enviroment only (on production should be AllowInsecureHttp = false)
-                AllowInsecureHttp = true,
+                AllowInsecureHttp = Boolean.Parse(ConfigurationManager.AppSettings["production_mode"]),
                 TokenEndpointPath = new PathString("/oauth/token"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
                 Provider = new CustomOAuthProvider(),
-                AccessTokenFormat = new CustomJwtFormat("http://localhost:59822")
+                AccessTokenFormat = new CustomJwtFormat("http://jv.com")
             };
 
             // OAuth 2.0 Bearer Access Token Generation
@@ -58,7 +57,7 @@ namespace AspNetIdentity.WebApi
 
         private void ConfigureOAuthTokenConsumption(IAppBuilder app) {
 
-            var issuer = "http://localhost:59822";
+            var issuer = "http://jv.com";
             string audienceId = ConfigurationManager.AppSettings["as:AudienceId"];
             byte[] audienceSecret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings["as:AudienceSecret"]);
 
