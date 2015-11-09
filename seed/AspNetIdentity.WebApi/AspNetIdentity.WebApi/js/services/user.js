@@ -82,6 +82,44 @@ angular.module('jvmarket')
         $window.localStorage.authToken = "";
     };
 
+
+    self.registerUser = function (user, callback) {
+        $http({
+            method: 'POST',
+            url: 'http://jv.com/api/accounts/create',
+            data: JSON.stringify(user),
+            headers: { 'Content-Type': 'application/json' }
+
+        })
+       .success(function (data) {
+
+           var msg = "Welcome, your user has been created: " + data.userName;
+           var rsp = { success: true, msg: msg };
+
+           if (angular.isFunction(callback)) {
+               callback(rsp);
+           }           
+       }
+       ).error(function (err) {
+           var msg = '';
+           if (err.modelState["createUserModel.Password"] && err.modelState["createUserModel.Password"].length > 0) {
+                msg = err.modelState["createUserModel.Password"][0];
+               // TODO more model state errors out to the UI here
+           }
+           else {
+               if (err.modelState[0] && angular.isArray(err.modelState[0])) {
+                   msg = err.modelState[0][0];
+               }
+           }
+
+           var rsp = { success: false, msg: msg };
+           if (angular.isFunction(callback)) {
+               callback(rsp);
+           }
+       })
+
+    }
+
     /**
      * Called on login and token check to refresh a user object based on data coming back from API
      * @function

@@ -43,7 +43,9 @@ angular.module('jvmarket')
         * @param {Object} response The response object that was returned from the request that was made.
         * @returns {Object} Deferred or rejected promise
         */
-        responseError: function(response){
+        responseError: function (response) {
+
+            console.log("responseError: " + JSON.stringify(response))
             // paths to be excluded from this 401 redirect
             //var excludePaths = [
             //    $rootScope.appConfig.api+"/users/login"
@@ -63,8 +65,8 @@ angular.module('jvmarket')
             //}
 
             //// otherwise, default behaviour
-            //return $q.reject(response);
-            return response;
+            return $q.reject(response);
+            //return response;
         }
     };
 });

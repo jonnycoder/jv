@@ -1,5 +1,5 @@
 angular.module('jvmarket')
-.controller('RegisterCtrl', function($scope, $rootScope, $location, $window, $http, User) {
+.controller('RegisterCtrl', function ($scope, $rootScope, $location, $window, $http, User) {
     $rootScope.section = $rootScope.section || {};
     $rootScope.section.name = "Register";
     console.log("RegisterCtrl");
@@ -9,27 +9,14 @@ angular.module('jvmarket')
         $scope.errorEmail = null;
         $scope.errorUserName = null;
         $scope.createConfirm = null;
-        $http({
-            method: 'POST',
-            url: 'http://jv.com/api/accounts/create',
-            data: JSON.stringify($scope.user),
-            headers: { 'Content-Type': 'application/json' }
-
-        })
-        .success(function (data) {
-            $scope.createConfirm = "Welcome, your user has been created: " + data.userName;
-        }
-        ).error(function (err) {
-            if (err.modelState["createUserModel.Password"] && err.modelState["createUserModel.Password"].length > 0) {
-                $scope.errorPassword = err.modelState["createUserModel.Password"][0];
-                // TODO more model state errors out to the UI here
+        User.registerUser($scope.user, function (registerRspModel) {
+            if (registerRspModel.success) {
+                $scope.createConfirm = registerRspModel.msg;
             }
-
-            if (err.modelState[0] && angular.isArray(err.modelState[0])) {
-                var msg = err.modelState[0][0];
-                $scope.errorPassword = msg;
+            else {
+                $scope.errorPassword = registerRspModel.msg;
             }
-        })
+        });
     };
 
     //User.authPromise().then(function(){
