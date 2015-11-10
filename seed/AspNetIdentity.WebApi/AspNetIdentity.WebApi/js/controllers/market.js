@@ -5,7 +5,9 @@ angular.module('jvmarket')
     console.log("MarketCtrl");
     $scope.user = {};
    
-
+    if (!User.isAuthenticated) {
+        $location.url("/login");
+    }
     //User.authPromise().then(function(){
     //    mixpanel.track("View Dashboard");
     //    $scope.accountMsg = "Logged in as: " + User.email;
