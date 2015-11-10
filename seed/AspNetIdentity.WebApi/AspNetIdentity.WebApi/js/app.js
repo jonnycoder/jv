@@ -9,6 +9,12 @@ angular.module('jvmarket', [
     .when("/", {
         controller: "RegisterCtrl",
         templateUrl: "js/views/register.html"
+    }).when("/login", {
+        controller: "LoginCtrl",
+        templateUrl: "js/views/login.html"
+    }).when("/market", {
+        controller: "MarketCtrl",
+        templateUrl: "js/views/market.html"
     });
 })
 .run(function ($rootScope, $document, $window, $location, User) {

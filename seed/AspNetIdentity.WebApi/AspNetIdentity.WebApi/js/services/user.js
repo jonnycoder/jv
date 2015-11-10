@@ -23,16 +23,8 @@ angular.module('jvmarket')
 
     /** Global alerts object used to manage badge totals in the dashboard, etc */
     self.globals = {
-        unreadMessages: 0,
-        profileCompleteness: 0,
-        forms: {
-            incomplete: 0,
-            total: 0
-        },
-        location: {
-            id: "",
-            name: ""
-        }
+
+        
     };
 
     /** The users default time zone */
@@ -83,6 +75,14 @@ angular.module('jvmarket')
     };
 
 
+    /**
+     * Registers a new user
+     * @function
+     * @name register User
+     * @memberOf User#
+     * @param {user} token The the user info to use for the registration
+     * @param {callback} callback for completion 
+     */
     self.registerUser = function (user, callback) {
         $http({
             method: 'POST',
@@ -108,6 +108,58 @@ angular.module('jvmarket')
            }
            else {
                if (err.modelState[0] && angular.isArray(err.modelState[0])) {
+                   msg = err.modelState[0][0];
+               }
+           }
+
+           var rsp = { success: false, msg: msg };
+           if (angular.isFunction(callback)) {
+               callback(rsp);
+           }
+       })
+
+    }
+
+    
+    /**
+     * Log in a user
+     * @function
+     * @name setAuthToken
+     * @memberOf User#
+     * @param {string} token The token that should be set for this user to use on all outbound API requests
+     */
+    self.loginUser = function (user, callback) {
+        var payload = angular.extend({grant_type: "password"}, user);
+        $http({
+            method: 'POST',
+            url: 'http://jv.com/oauth/token',
+            data: payload,
+            transformRequest: function (obj) {
+                var str = [];
+                for (var p in obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+
+        })
+       .success(function (data) {
+
+           var msg = "Welcome ";//+ data.userName;
+           var rsp = { success: true, msg: msg };
+
+           if (angular.isFunction(callback)) {
+               callback(rsp);
+           }
+       }
+       ).error(function (err) {
+           var msg = 'There was a problem logging in';
+           if (err.modelState && err.modelState["createUserModel.Password"] && err.modelState["createUserModel.Password"].length > 0) {
+               msg = err.modelState["createUserModel.Password"][0];
+               // TODO more model state errors out to the UI here
+           }
+           else {
+               if (err.modelState && err.modelState[0] && angular.isArray(err.modelState[0])) {
                    msg = err.modelState[0][0];
                }
            }
