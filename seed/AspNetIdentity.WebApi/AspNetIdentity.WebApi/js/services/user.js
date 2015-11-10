@@ -101,16 +101,7 @@ angular.module('jvmarket')
            }           
        }
        ).error(function (err) {
-           var msg = '';
-           if (err.modelState["createUserModel.Password"] && err.modelState["createUserModel.Password"].length > 0) {
-                msg = err.modelState["createUserModel.Password"][0];
-               // TODO more model state errors out to the UI here
-           }
-           else {
-               if (err.modelState[0] && angular.isArray(err.modelState[0])) {
-                   msg = err.modelState[0][0];
-               }
-           }
+           var msg = msgFromModelState(err);
 
            var rsp = { success: false, msg: msg };
            if (angular.isFunction(callback)) {
@@ -147,28 +138,50 @@ angular.module('jvmarket')
 
            var msg = "Welcome ";//+ data.userName;
            var rsp = { success: true, msg: msg };
-
+           self.isAuthenticated = true;
            if (angular.isFunction(callback)) {
                callback(rsp);
            }
        }
        ).error(function (err) {
-           var msg = 'There was a problem logging in';
-           if (err.modelState && err.modelState["createUserModel.Password"] && err.modelState["createUserModel.Password"].length > 0) {
-               msg = err.modelState["createUserModel.Password"][0];
-               // TODO more model state errors out to the UI here
-           }
-           else {
-               if (err.modelState && err.modelState[0] && angular.isArray(err.modelState[0])) {
-                   msg = err.modelState[0][0];
-               }
-           }
+           
+           var msg = msgFromModelState(err);
 
            var rsp = { success: false, msg: msg };
            if (angular.isFunction(callback)) {
                callback(rsp);
            }
        })
+
+    }
+
+    function msgFromModelState(err) {
+        var msg = null;
+        if (err.modelState["createUserModel.Password"] && err.modelState["createUserModel.Password"].length > 0) {
+            msg = err.modelState["createUserModel.Password"][0];
+        }
+        if (msg == null && err.modelState["createUserModel.ConfirmPassword"] && err.modelState["createUserModel.ConfirmPassword"].length > 0) {
+            msg = err.modelState["createUserModel.ConfirmPassword"][0];
+        }
+        if (msg == null && err.modelState["createUserModel.Email"] && err.modelState["createUserModel.Email"].length > 0) {
+            msg = err.modelState["createUserModel.Email"][0];
+        }
+        if (msg == null && err.modelState["createUserModel.FirstName"] && err.modelState["createUserModel.FirstName"].length > 0) {
+            msg = err.modelState["createUserModel.FirstName"][0];
+        }
+        if (msg == null && err.modelState["createUserModel.LastName"] && err.modelState["createUserModel.LastName"].length > 0) {
+            msg = err.modelState["createUserModel.LastName"][0];
+        }
+
+        if (err.modelState[0] && angular.isArray(err.modelState[0])) {
+            msg = err.modelState[0][0];
+        }
+
+        if (msg == null) {
+            msg = 'There was a problem registering';
+        }
+
+        return msg;
 
     }
 
@@ -211,81 +224,6 @@ angular.module('jvmarket')
         self.timeZone = "-0500"; // default timezone, will be loaded on login later
     }
 
-    /**
-     * Attempt to log this user in with the given credentials
-     * @function
-     * @name login
-     * @memberOf User#
-     * @param {String} username The email to login as
-     * @param {String} password The password to attempt
-     * @param {Object} captcha Any captcha information to send up, if applicable
-     * @param {Function} callback The function to call upon success or failure
-     */
-    self.login = function (username, password, captcha, callback) {
-        self.isAuthenticated = false;
-        self.username = "";
-        self.userID = -1;
-
-        var results = {
-            success: false,
-            message: ""
-        };
-
-        // captcha is optional, so make sure its at least an object before going forward
-        if (!angular.isObject(captcha)) {
-            captcha = {};
-        }
-
-        // form the request data
-        var reqData = {
-            Username: username,
-            Password: password,
-            CaptchaChallenge: captcha.challenge,
-            CaptchaResponse: captcha.response
-        };
-
-        // go ahead and log them out
-        self.deleteAuthToken();
-
-        // make api call here w/ $http
-        $http.post($rootScope.config.api + "/users/login", jQuery.param(reqData), { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
-        .success(function (data) {
-            self.isAuthenticated = true;
-
-            // set the auth token
-            self.setAuthToken(data.AuthenticationToken);
-            populateUserObject(data);
-            authPromise.resolve(self);
-
-            results.success = true;
-            results.message = "Logged in successfully";
-
-            if (angular.isFunction(callback)) {
-                callback(results);
-            }
-        })
-        .error(function (data) {
-            self.isAuthenticated = false;
-
-            authPromise.reject(self);
-
-            results.success = false;
-            if (angular.isObject(data)) {
-                results.message = data.FriendlyMessage;
-                results.DataStore = data.DataStore;
-                results.Property = data.Property;
-            }
-            else {
-                results.message = "Error logging in. Please try again.";
-            }
-
-            if (angular.isFunction(callback)) {
-                callback(results);
-            }
-        });
-    };
-
-    // request
 
     /**
      * Delete the users authentication credentials, notifies server of logout, redirects user back to login page.

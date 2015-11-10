@@ -1,21 +1,22 @@
 angular.module('jvmarket')
-.controller('RegisterCtrl', function ($scope, $rootScope, $location, $window, $http, User) {
+.controller('LoginCtrl', function ($scope, $rootScope, $location, $window, $http, User) {
     $rootScope.section = $rootScope.section || {};
-    $rootScope.section.name = "Register";
-    console.log("RegisterCtrl");
+    $rootScope.section.name = "Login";
+    console.log("LoginCtrl");
     $scope.user = {};
-
-    $scope.submitRegisterForm = function () {
+    $scope.submitLoginForm = function () {
         $scope.errorPassword = null;
         $scope.errorEmail = null;
         $scope.errorUserName = null;
         $scope.createConfirm = null;
-        User.registerUser($scope.user, function (registerRspModel) {
-            if (registerRspModel.success) {
-                $scope.createConfirm = registerRspModel.msg;
+        User.loginUser($scope.user, function (loginRspModel) {
+            if (loginRspModel.success) {
+                $rootScope.$broadcast('event:auth-success', loginRspModel);
+                $location.url("/market");
+                $scope.errorLogin = "Successful login";
             }
             else {
-                $scope.errorPassword = registerRspModel.msg;
+                $scope.errorLogin = loginRspModel.msg;
             }
         });
     };

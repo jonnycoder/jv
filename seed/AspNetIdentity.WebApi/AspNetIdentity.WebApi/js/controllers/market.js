@@ -1,24 +1,10 @@
 angular.module('jvmarket')
-.controller('RegisterCtrl', function ($scope, $rootScope, $location, $window, $http, User) {
+.controller('MarketCtrl', function ($scope, $rootScope, $location, $window, $http, User, Market) {
     $rootScope.section = $rootScope.section || {};
-    $rootScope.section.name = "Register";
-    console.log("RegisterCtrl");
+    $rootScope.section.name = "Login";
+    console.log("MarketCtrl");
     $scope.user = {};
-
-    $scope.submitRegisterForm = function () {
-        $scope.errorPassword = null;
-        $scope.errorEmail = null;
-        $scope.errorUserName = null;
-        $scope.createConfirm = null;
-        User.registerUser($scope.user, function (registerRspModel) {
-            if (registerRspModel.success) {
-                $scope.createConfirm = registerRspModel.msg;
-            }
-            else {
-                $scope.errorPassword = registerRspModel.msg;
-            }
-        });
-    };
+   
 
     //User.authPromise().then(function(){
     //    mixpanel.track("View Dashboard");

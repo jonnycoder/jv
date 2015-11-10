@@ -19,23 +19,12 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div id="contact-slider">
-                        
+                           
                                     <!-- Contact details -->
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <form class="contact-form" ng-submit="submitRegisterForm()" novalidate="" id="contactForm">
+                                            <form class="contact-form" ng-submit="submitLoginForm()" novalidate="" id="contactForm">
                                                 <div class="col-lg-12">
-                                                    <div class="row">
-                                                        <div class="col-lg-6">
-                                                            <input type="text" class="form-control" placeholder="Your First Name" ng-model="user.FirstName">
-                                                        </div>
-                                                        <div class="col-lg-6">
-                                                            <input type="text" class="form-control" placeholder="Your Last Name" ng-model="user.LastName">
-                                                        </div>
-                                                        <div class="col-lg-6">
-                                                            <input type="text" class="form-control" placeholder="Email" ng-model="user.Email">
-                                                        </div>
-                                                    </div>
                                                     <div class="row">
                                                         <div class="col-lg-12">
                                                             <input type="text" class="form-control" placeholder="User name" ng-model="user.UserName">
@@ -43,27 +32,24 @@
                                                         <div class="col-lg-12">
                                                             <input type="password" class="form-control" placeholder="Password" ng-model="user.Password">
                                                         </div>
-                                                        <div class="col-lg-12">
-                                                            <input type="password" class="form-control" placeholder="Confirm password" ng-model="user.ConfirmPassword">
-                                                        </div>
 
-                                                        <button class="button button-white-side">Sign up</button>
+                                                        <button class="button button-white-side">Log in</button>
                                                         <br />
-                                                        <span ng-show="createConfirm">{{createConfirm}}</span>
-                                                        <span ng-show="errorPassword">{{errorPassword}}</span>
-                                                        <span ng-show="errorUserName">{{errorUserName}}</span>
-                                                        <span ng-show="errorEmail">{{errorEmail}}</span>
+                                                        <span ng-show="errorLogin">{{errorLogin}}</span>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
-                                        <ng-include src="'js/views/contactSide.html'"></ng-include>
+                                     <ng-include src="'js/views/contactSide.html'"></ng-include>
                                     </div>
                                     <div class="row">
-                                        <ng-include src="'js/views/socialFooter.html'"></ng-include>
-                                       
+                                        <div class="col-lg-12">
+                                            <a href="javascript:;"><i class="icon-facebook icon-social button-white-side"></i></a>
+                                            <a href="javascript:;"><i class="icon-google-plus icon-social button-white-side"></i></a>
+                                            <a href="javascript:;"><i class="icon-dribbble icon-social button-white-side"></i></a>
+                                        </div>
                                     </div>
-                        
+
                         </div>
                     </div>
                 </div>
@@ -88,4 +74,3 @@
         </div>
     </div>
 </section>
-
