@@ -45,7 +45,8 @@ namespace AspNetIdentity.WebApi.Controllers
                 Microsoft.Owin.Security.AuthenticationProperties properties = new Microsoft.Owin.Security.AuthenticationProperties();
                 properties.IssuedUtc = DateTime.Now.ToUniversalTime();
                 properties.ExpiresUtc = DateTime.Now.AddHours(6).ToUniversalTime();
-                properties.Dictionary.Add("roles", String.Join(",", lookup.Roles.ToArray()));
+
+                //properties..Claims.Dictionary.Add("roles", String.Join(",", lookup.Roles.ToArray()));
                 
                 loginResult.token = jwt.Protect(new Microsoft.Owin.Security.AuthenticationTicket(identity, properties));
             }

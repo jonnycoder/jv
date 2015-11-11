@@ -50,7 +50,31 @@ namespace AspNetIdentity.WebApi.Providers
 
         public AuthenticationTicket Unprotect(string protectedText)
         {
-            throw new NotImplementedException();
+            return null;
+        }
+
+        public IEnumerable<System.Security.Claims.Claim> Validate(string protectedText)
+        {
+
+            string audienceId = ConfigurationManager.AppSettings["as:AudienceId"];
+
+            string symmetricKeyAsBase64 = ConfigurationManager.AppSettings["as:AudienceSecret"];
+
+            var keyByteArray = TextEncodings.Base64Url.Decode(symmetricKeyAsBase64);
+
+            var signingKey = new HmacSigningCredentials(keyByteArray);
+
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken validatedToken = null;
+            var claimsPrincipal = tokenHandler.ValidateToken(protectedText, new TokenValidationParameters() { ValidAudience = audienceId, IssuerSigningKey = signingKey.SigningKey, ValidIssuer = _issuer }, out validatedToken);
+           
+            if (null != validatedToken && null != claimsPrincipal)
+            {
+                return claimsPrincipal.Claims;
+            }
+
+            return null;
+            
         }
     }
 }
