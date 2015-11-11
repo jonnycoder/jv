@@ -53,7 +53,7 @@ namespace AspNetIdentity.WebApi.Providers
             return null;
         }
 
-        public IEnumerable<System.Security.Claims.Claim> Validate(string protectedText)
+        public System.Security.Claims.ClaimsPrincipal Validate(string protectedText)
         {
 
             string audienceId = ConfigurationManager.AppSettings["as:AudienceId"];
@@ -66,15 +66,13 @@ namespace AspNetIdentity.WebApi.Providers
 
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken validatedToken = null;
-            var claimsPrincipal = tokenHandler.ValidateToken(protectedText, new TokenValidationParameters() { ValidAudience = audienceId, IssuerSigningKey = signingKey.SigningKey, ValidIssuer = _issuer }, out validatedToken);
-           
-            if (null != validatedToken && null != claimsPrincipal)
+            System.Security.Claims.ClaimsPrincipal claimsPrincipal = tokenHandler.ValidateToken(protectedText, new TokenValidationParameters() { ValidAudience = audienceId, IssuerSigningKey = signingKey.SigningKey, ValidIssuer = _issuer }, out validatedToken);
+            if (validatedToken.ValidTo < DateTime.Now.ToUniversalTime())
             {
-                return claimsPrincipal.Claims;
+                return null;
             }
-
-            return null;
-            
+            return claimsPrincipal;
+         
         }
     }
 }

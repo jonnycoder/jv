@@ -18,7 +18,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
-    //        var appDbContext = context.Get<ApplicationDbContext>();
+          //  var appDbContext = context.Get<ApplicationDbContext>();
             var appUserManager = new ApplicationUserManager(new MySqlUserStore<ApplicationUser>());
 
             // Configure validation logic for usernames

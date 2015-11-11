@@ -35,7 +35,6 @@ namespace AspNetIdentity.WebApi.Controllers
             }
             ApplicationUser lookup = AppUserManager.Find(loginUserModel.UserName, loginUserModel.Password);
            
-
             var loginResult = new LoginResponse();
             if (lookup != null && lookup.EmailConfirmed)
             {
@@ -46,16 +45,14 @@ namespace AspNetIdentity.WebApi.Controllers
                 properties.IssuedUtc = DateTime.Now.ToUniversalTime();
                 properties.ExpiresUtc = DateTime.Now.AddHours(6).ToUniversalTime();
 
-                //properties..Claims.Dictionary.Add("roles", String.Join(",", lookup.Roles.ToArray()));
-                
                 loginResult.token = jwt.Protect(new Microsoft.Owin.Security.AuthenticationTicket(identity, properties));
+                loginResult.httpResult = Convert.ToInt16(System.Net.HttpStatusCode.OK);
+                return Json<LoginResponse>(loginResult);
             }
             else
             {
-                loginResult.httpResult = Convert.ToInt16(System.Net.HttpStatusCode.Forbidden);
-            }
-
-            return Json<LoginResponse>(loginResult);
+                return StatusCode(System.Net.HttpStatusCode.Unauthorized);
+            }    
         }
 
         [Authorize(Roles = "Admin")]
@@ -118,9 +115,8 @@ namespace AspNetIdentity.WebApi.Controllers
                 FirstName = createUserModel.FirstName,
                 LastName = createUserModel.LastName,
                 Level = 3,
-                JoinDate = DateTime.Now.Date,
+                JoinDate = DateTime.Now.Date
             };
-
 
             IdentityResult addUserResult = await this.AppUserManager.CreateAsync(user, createUserModel.Password);
 
@@ -128,6 +124,14 @@ namespace AspNetIdentity.WebApi.Controllers
             {
                 return GetErrorResult(addUserResult);
             }
+
+            // extend the user with specific information
+            var userExt = new UserExtension();
+            userExt.SkypeHandle = createUserModel.SkypeHandle;
+            userExt.userId = user.Id;
+            UserExtensionManager.Context.UserExtensions.Add(userExt);
+            
+            int resultCount = await UserExtensionManager.Context.Update();
 
             string code = await this.AppUserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 

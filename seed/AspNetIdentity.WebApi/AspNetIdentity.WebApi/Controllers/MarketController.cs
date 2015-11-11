@@ -38,7 +38,6 @@ namespace AspNetIdentity.WebApi.Controllers
     [RoutePrefix("api/market")]
     public class MarketController : BaseApiController
     {
-
         private CustomJwtFormat jwtFormatter = new CustomJwtFormat("http://jv.com");
 
         [Route("resources")]
@@ -53,10 +52,15 @@ namespace AspNetIdentity.WebApi.Controllers
 
             var jwtString = authHeader.ElementAt(0).Replace("Bearer ", "");
   
-            IEnumerable<Claim> claims = await Task.Run( () => jwtFormatter.Validate(jwtString));
-
+            ClaimsPrincipal principal = await Task.Run( () => jwtFormatter.Validate(jwtString));
+            if (null == principal)
+            {
+                return StatusCode(System.Net.HttpStatusCode.Unauthorized);
+            }
+            string userName = principal.Identity.GetUserName();
+            string userId = principal.Identity.GetUserId();
             CustomerResourceResponse response = new CustomerResourceResponse();
-            var roles = (from c in claims where c.Type.ToLower().Contains("role") select c.Value).ToList();
+            var roles = (from c in principal.Claims where c.Type.ToLower().Contains("role") select c.Value).ToList();
 
             if (roles.Contains("Affiliate"))
             {
