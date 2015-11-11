@@ -39,6 +39,18 @@ namespace AspNetIdentity.WebApi.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [StringLength(32, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Text)]
+        [Display(Name = "Skype handle")]
+        public string SkypeHandle { get; set; }
+
+        [Required]
+        [StringLength(15, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 10)]
+        [DataType(DataType.Text)]
+        [Display(Name = "Phone number")]
+        public string PhoneNumber { get; set; }
     }
 
     public class ChangePasswordBindingModel

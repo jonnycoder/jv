@@ -46,7 +46,12 @@
                                                         <div class="col-lg-12">
                                                             <input type="password" class="form-control" placeholder="Confirm password" ng-model="user.ConfirmPassword">
                                                         </div>
-
+                                                        <div class="col-lg-12">
+                                                            <input type="text" ui-mask="(999) 999-9999" class="form-control" placeholder="Phone (111) 111-1111" ng-model="user.PhoneNumber">
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                            <input type="text" class="form-control" placeholder="Skype&trade; handle" ng-model="user.SkypeHandle">
+                                                        </div>
                                                         <button class="button button-white-side">Sign up</button>
                                                         <br />
                                                         <span ng-show="createConfirm">{{createConfirm}}</span>

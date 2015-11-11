@@ -157,28 +157,34 @@ angular.module('jvmarket')
 
     function msgFromModelState(err) {
         var msg = null;
-        if (err.modelState["createUserModel.Password"] && err.modelState["createUserModel.Password"].length > 0) {
+        if (err.modelState && err.modelState["createUserModel.Password"] && err.modelState["createUserModel.Password"].length > 0) {
             msg = err.modelState["createUserModel.Password"][0];
         }
-        if (msg == null && err.modelState["createUserModel.ConfirmPassword"] && err.modelState["createUserModel.ConfirmPassword"].length > 0) {
+        if (msg == null && err.modelState && err.modelState["createUserModel.ConfirmPassword"] && err.modelState["createUserModel.ConfirmPassword"].length > 0) {
             msg = err.modelState["createUserModel.ConfirmPassword"][0];
         }
-        if (msg == null && err.modelState["createUserModel.Email"] && err.modelState["createUserModel.Email"].length > 0) {
+        if (msg == null && err.modelState && err.modelState["createUserModel.Email"] && err.modelState["createUserModel.Email"].length > 0) {
             msg = err.modelState["createUserModel.Email"][0];
         }
-        if (msg == null && err.modelState["createUserModel.FirstName"] && err.modelState["createUserModel.FirstName"].length > 0) {
+        if (msg == null && err.modelState && err.modelState["createUserModel.FirstName"] && err.modelState["createUserModel.FirstName"].length > 0) {
             msg = err.modelState["createUserModel.FirstName"][0];
         }
-        if (msg == null && err.modelState["createUserModel.LastName"] && err.modelState["createUserModel.LastName"].length > 0) {
+        if (msg == null && err.modelState && err.modelState["createUserModel.LastName"] && err.modelState["createUserModel.LastName"].length > 0) {
             msg = err.modelState["createUserModel.LastName"][0];
         }
+        if (msg == null && err.modelState && err.modelState["createUserModel.PhoneNumber"] && err.modelState["createUserModel.PhoneNumber"].length > 0) {
+            msg = err.modelState["createUserModel.PhoneNumber"][0];
+        }
+        if (msg == null && err.modelState && err.modelState["createUserModel.SkypeHandle"] && err.modelState["createUserModel.SkypeHandle"].length > 0) {
+            msg = err.modelState["createUserModel.SkypeHandle"][0];
+        }
 
-        if (err.modelState[0] && angular.isArray(err.modelState[0])) {
+        if (err.modelState && err.modelState[0] && angular.isArray(err.modelState[0])) {
             msg = err.modelState[0][0];
         }
 
         if (msg == null) {
-            msg = 'There was a problem registering';
+            msg = 'There was a problem';
         }
 
         return msg;
