@@ -16,7 +16,7 @@ angular.module('jvmarket')
         */
         request: function(config){
             // if this is an api request, tack on our auth token
-            if (config.url.indexOf($rootScope.appConfig.api) === 0){
+            if (config.url.indexOf($rootScope.appConfig.api) > 0){
                 config.headers = config.headers || {};
 
                 if (angular.isString($window.localStorage.authToken) && $window.localStorage.authToken !== ""){

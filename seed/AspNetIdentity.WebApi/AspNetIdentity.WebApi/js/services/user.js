@@ -120,11 +120,11 @@ angular.module('jvmarket')
      * @param {string} token The token that should be set for this user to use on all outbound API requests
      */
     self.loginUser = function (user, callback) {
-        var payload = angular.extend({grant_type: "password"}, user);
+       // var payload = angular.extend({grant_type: "password"}, user);
         $http({
             method: 'POST',
-            url: 'http://jv.com/oauth/token',
-            data: payload,
+            url: 'http://jv.com/api/accounts/login',
+            data: user,
             transformRequest: function (obj) {
                 var str = [];
                 for (var p in obj)
@@ -139,6 +139,7 @@ angular.module('jvmarket')
            var msg = "Welcome ";//+ data.userName;
            var rsp = { success: true, msg: msg };
            self.isAuthenticated = true;
+           self.setAuthToken( data.token );
            if (angular.isFunction(callback)) {
                callback(rsp);
            }

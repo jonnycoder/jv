@@ -1,4 +1,5 @@
 ﻿using AspNetIdentity.WebApi.Infrastructure;
+using AspNetIdentity.WebApi.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,48 @@ using System.Security.Claims;
 
 namespace AspNetIdentity.WebApi.Controllers
 {
+    class LoginResponse
+    {
+        public int httpResult { get; set; }
+        public string token { get; set; }
+    }
+
     [RoutePrefix("api/accounts")]
     public class AccountsController : BaseApiController
     {
+
+        [AllowAnonymous]
+        [Route("login")]
+        [HttpPost]
+        public async Task<IHttpActionResult> Login(LoginUserBindingModel loginUserModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            ApplicationUser lookup = AppUserManager.Find(loginUserModel.UserName, loginUserModel.Password);
+           
+
+            var loginResult = new LoginResponse();
+            if (lookup != null && lookup.EmailConfirmed)
+            {
+                loginResult.httpResult = Convert.ToInt16(System.Net.HttpStatusCode.OK);
+                CustomJwtFormat jwt = new CustomJwtFormat("http://jv.com");
+                var identity = await lookup.GenerateUserIdentityAsync(AppUserManager, "password");
+                Microsoft.Owin.Security.AuthenticationProperties properties = new Microsoft.Owin.Security.AuthenticationProperties();
+                properties.IssuedUtc = DateTime.Now.ToUniversalTime();
+                properties.ExpiresUtc = DateTime.Now.AddHours(6).ToUniversalTime();
+                properties.Dictionary.Add("roles", String.Join(",", lookup.Roles.ToArray()));
+                
+                loginResult.token = jwt.Protect(new Microsoft.Owin.Security.AuthenticationTicket(identity, properties));
+            }
+            else
+            {
+                loginResult.httpResult = Convert.ToInt16(System.Net.HttpStatusCode.Forbidden);
+            }
+
+            return Json<LoginResponse>(loginResult);
+        }
 
         [Authorize(Roles = "Admin")]
         [Route("users")]
