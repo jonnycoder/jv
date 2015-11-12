@@ -179,6 +179,16 @@ angular.module('jvmarket')
         if (msg == null && err.modelState && err.modelState["createUserModel.SkypeHandle"] && err.modelState["createUserModel.SkypeHandle"].length > 0) {
             msg = err.modelState["createUserModel.SkypeHandle"][0];
         }
+        if (msg == null && err.modelState && err.modelState["createUserModel.ProgramUrl"] && err.modelState["createUserModel.ProgramUrl"].length > 0) {
+            msg = err.modelState["createUserModel.ProgramUrl"][0];
+        }
+        if (msg == null && err.modelState && err.modelState["createUserModel.ProgramDescription"] && err.modelState["createUserModel.ProgramDescription"].length > 0) {
+            msg = err.modelState["createUserModel.ProgramDescription"][0];
+        }
+        if (msg == null && err.modelState && err.modelState["createUserModel.IndividualDescription"] && err.modelState["createUserModel.IndividualDescription"].length > 0) {
+            msg = err.modelState["createUserModel.IndividualDescription"][0];
+        }
+
 
         if (err.modelState && err.modelState[0] && angular.isArray(err.modelState[0])) {
             msg = err.modelState[0][0];

@@ -16,62 +16,91 @@
     <div class="contact-wrapper">
         <div class="container">
             <div class="wrapper">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div id="contact-slider">
-                        
-                                    <!-- Contact details -->
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <form class="contact-form" ng-submit="submitRegisterForm()" novalidate="" id="contactForm">
+                <form class="contact-form" ng-submit="submitRegisterForm()" novalidate="" id="contactForm">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <div class="bio"><h3>Affiliate</h3></div>
+                            <p>
+                                Do so many fun things as an affiliate
+                            </p>
+                            <input type="checkbox" ng-model="user.Affiliate" />
+                            <br /><br />
+                            <div class="bio"><h3>Marketer</h3></div>
+                            <i class="fa fa-check  fa-3"></i>
+                            <p>
+                                Do so many fun things as a marketer
+                            </p>
+                            <input type="checkbox" ng-model="user.Marketer" />
+                            <br/><br />
+                            <button class="button button-white-side">Sign up</button>
+                        </div>
+
+                        <div class="col-lg-10">
+                            <div id="contact-slider">
+
+                                <!-- Contact details -->
+                                <div class="row">
+                                    <div class="col-lg-6">
+
+                                        <div class="col-lg-12">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" placeholder="Your First Name" ng-model="user.FirstName">
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" placeholder="Your Last Name" ng-model="user.LastName">
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" placeholder="Email" ng-model="user.Email">
+                                                </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="row">
-                                                        <div class="col-lg-6">
-                                                            <input type="text" class="form-control" placeholder="Your First Name" ng-model="user.FirstName">
-                                                        </div>
-                                                        <div class="col-lg-6">
-                                                            <input type="text" class="form-control" placeholder="Your Last Name" ng-model="user.LastName">
-                                                        </div>
-                                                        <div class="col-lg-6">
-                                                            <input type="text" class="form-control" placeholder="Email" ng-model="user.Email">
-                                                        </div>
+                                                    <input type="text" class="form-control" placeholder="User name" ng-model="user.UserName">
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <input type="password" class="form-control" placeholder="Password" ng-model="user.Password">
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <input type="password" class="form-control" placeholder="Confirm password" ng-model="user.ConfirmPassword">
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <input type="text" ui-mask="(999) 999-9999" class="form-control" placeholder="Phone (111) 111-1111" ng-model="user.PhoneNumber">
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <input type="text" class="form-control" placeholder="Skype&trade; handle" ng-model="user.SkypeHandle">
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <textarea rows="5" class="form-control" placeholder="Describe yourself (40 characters min.)" ng-model="user.IndividualDescription"></textarea>
+                                                </div>
+                                                <div ng-show="user.Marketer">
+                                                    <div class="col-lg-12">
+                                                        <input type="text" class="form-control" placeholder="Your program brochure site URL" ng-model="user.ProgramUrl">
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-lg-12">
-                                                            <input type="text" class="form-control" placeholder="User name" ng-model="user.UserName">
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <input type="password" class="form-control" placeholder="Password" ng-model="user.Password">
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <input type="password" class="form-control" placeholder="Confirm password" ng-model="user.ConfirmPassword">
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <input type="text" ui-mask="(999) 999-9999" class="form-control" placeholder="Phone (111) 111-1111" ng-model="user.PhoneNumber">
-                                                        </div>
-                                                        <div class="col-lg-12">
-                                                            <input type="text" class="form-control" placeholder="Skype&trade; handle" ng-model="user.SkypeHandle">
-                                                        </div>
-                                                        <button class="button button-white-side">Sign up</button>
-                                                        <br />
-                                                        <span ng-show="createConfirm">{{createConfirm}}</span>
-                                                        <span ng-show="errorPassword">{{errorPassword}}</span>
-                                                        <span ng-show="errorUserName">{{errorUserName}}</span>
-                                                        <span ng-show="errorEmail">{{errorEmail}}</span>
+                                                    <div class="col-lg-12">
+                                                        <textarea rows="5" class="form-control" placeholder="Describe your affiliate program (40 characters min.)" ng-model="user.ProgramDescription"></textarea>
                                                     </div>
                                                 </div>
-                                            </form>
+                                             
+                                                <br />
+                                                <span ng-show="createConfirm">{{createConfirm}}</span>
+                                                <span ng-show="errorPassword">{{errorPassword}}</span>
+                                                <span ng-show="errorUserName">{{errorUserName}}</span>
+                                                <span ng-show="errorEmail">{{errorEmail}}</span>
+                                            </div>
                                         </div>
+
+                                    </div>
+                                    <div class="col-lg-12">
                                         <ng-include src="'js/views/contactSide.html'"></ng-include>
-                                    </div>
-                                    <div class="row">
                                         <ng-include src="'js/views/socialFooter.html'"></ng-include>
-                                       
                                     </div>
-                        
+
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
             <div class="credits">
                 <div class="container">

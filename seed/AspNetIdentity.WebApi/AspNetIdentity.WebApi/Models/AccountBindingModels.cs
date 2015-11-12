@@ -51,6 +51,29 @@ namespace AspNetIdentity.WebApi.Models
         [DataType(DataType.Text)]
         [Display(Name = "Phone number")]
         public string PhoneNumber { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Affiliate")]
+        public string Affiliate { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Affiliate")]
+        public string Marketer { get; set; }
+
+        [DataType(DataType.Url)]
+        [RegularExpression(@"^http(s)?\://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(/\S*)?$", ErrorMessage ="Please enter a valid url")]
+        [Display(Name = "Program url")]
+        public string ProgramUrl { get; set; }
+
+        [StringLength(2000, ErrorMessage = "Please enter a {0} at least {2} characters long.", MinimumLength = 40)]
+        [DataType(DataType.Text)]
+        [Display(Name = "Program description")]
+        public string ProgramDescription { get; set; }
+
+        [StringLength(2000, ErrorMessage = "Please enter a {0} at least {2} characters long.", MinimumLength = 40)]
+        [DataType(DataType.Text)]
+        [Display(Name = "Individual description")]
+        public string IndividualDescription { get; set; }
     }
 
     public class ChangePasswordBindingModel
