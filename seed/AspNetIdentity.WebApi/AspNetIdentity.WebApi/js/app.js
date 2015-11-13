@@ -19,7 +19,7 @@ angular.module('jvmarket', [
 })
 .run(function ($rootScope, $document, $window, $location, User) {
     $rootScope.appConfig = {
-        appname: "JV Market",
+        appname: "JV Matchup",
         url: "jv.com",
         api: "jv.com/api",
         version: "0.5"

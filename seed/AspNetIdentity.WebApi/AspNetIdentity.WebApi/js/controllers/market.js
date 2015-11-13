@@ -4,10 +4,16 @@ angular.module('jvmarket')
     $rootScope.section.name = "Login";
     console.log("MarketCtrl");
     $scope.user = {};
-   
+    $scope.resources = null;
     if (!User.isAuthenticated) {
         $location.url("/login");
     }
+
+    Market.getResources(function (response) {
+        if (response.success) {
+            $scope.resources = response.data;
+        }
+    });
     //User.authPromise().then(function(){
     //    mixpanel.track("View Dashboard");
     //    $scope.accountMsg = "Logged in as: " + User.email;

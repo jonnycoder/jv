@@ -21,6 +21,26 @@ namespace AspNetIdentity.WebApi.Models
             _AppUserManager = appUserManager;
         }
 
+        public class UserResourceResponse
+        {
+            public List<AffiliateReturnModel> affiliates = new List<AffiliateReturnModel>();
+            public List<BusinessProgramReturnModel> programs = new List<BusinessProgramReturnModel>();
+        }
+
+        public AffiliateReturnModel CreateAffiliate(ApplicationUser appUser, UserExtension extension)
+        {
+            return new AffiliateReturnModel
+            {
+                Email = appUser.Email,
+                FirstName = appUser.FirstName,
+                LastName = appUser.LastName,
+                PhoneNumber = appUser.PhoneNumber,
+                Username = appUser.UserName,
+                IndividualDescription = extension.IndividualDescription,
+                SkypeHandle = extension.SkypeHandle
+            };   
+        }
+
         public UserReturnModel Create(ApplicationUser appUser)
         {
             return new UserReturnModel
@@ -39,14 +59,15 @@ namespace AspNetIdentity.WebApi.Models
 
         }
 
-        public RoleReturnModel Create(IdentityRole appRole) {
+        public RoleReturnModel Create(IdentityRole appRole)
+        {
 
             return new RoleReturnModel
-           {
-               Url = _UrlHelper.Link("GetRoleById", new { id = appRole.Id }),
-               Id = appRole.Id,
-               Name = appRole.Name
-           };
+            {
+                Url = _UrlHelper.Link("GetRoleById", new { id = appRole.Id }),
+                Id = appRole.Id,
+                Name = appRole.Name
+            };
 
         }
     }
@@ -66,6 +87,27 @@ namespace AspNetIdentity.WebApi.Models
         public IList<System.Security.Claims.Claim> Claims { get; set; }
 
     }
+
+    public class AffiliateReturnModel
+    {
+        public string Email { get; set; }
+        public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string SkypeHandle { get; set; }
+        public string PhoneNumber { get; set; }
+        public string IndividualDescription { get; set; }
+    }
+
+    public class BusinessProgramReturnModel
+    {
+        public string ProgramUrl { get; set; }
+        public string ProgramName { get; set; }
+        public string ProgramDescription { get; set; }
+        public string CreatedDate { get; set; }
+    }
+
+
 
     public class RoleReturnModel
     {

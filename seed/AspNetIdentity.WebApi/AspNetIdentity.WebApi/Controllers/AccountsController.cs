@@ -74,7 +74,7 @@ namespace AspNetIdentity.WebApi.Controllers
                 Level = 3,
                 JoinDate = DateTime.Now.Date
             };
-
+            
             IdentityResult addUserResult = await this.AppUserManager.CreateAsync(user, createUserModel.Password);
 
             if (!addUserResult.Succeeded)
@@ -85,11 +85,46 @@ namespace AspNetIdentity.WebApi.Controllers
             // extend the user with specific information
             var userExt = new UserExtension();
             userExt.SkypeHandle = createUserModel.SkypeHandle;
-            userExt.userId = user.Id;
+            userExt.UserId = user.Id;
+            userExt.IndividualDescription = createUserModel.IndividualDescription;
             UserExtensionManager.Context.UserExtensions.Add(userExt);
-            
-            int resultCount = await UserExtensionManager.Context.Update();
 
+            try
+            {
+                int resultCount = await UserExtensionManager.Context.Update();
+            }
+            catch (Exception ex)
+            {
+                // todo delete user here
+            }
+            Uri locationHeader = await SendConfirm(user);
+
+            bool IsMarketer = false;
+            if (null != createUserModel.Marketer && !bool.TryParse(createUserModel.Marketer, out IsMarketer))
+            {
+                return BadRequest();
+            }
+            // check if the user created a program
+            if (IsMarketer)
+            {
+                Program newProgram = new Program()
+                {
+                    CreatedDate = DateTime.Now,
+                    CreatorId = user.Id,
+                    Description = createUserModel.ProgramDescription,
+                    Url = createUserModel.ProgramUrl,
+                    Name = createUserModel.ProgramName
+                };
+
+                MarketManager.Context.Programs.Add(newProgram);
+                await MarketManager.Context.Update();
+            }
+
+            return Created(locationHeader, TheModelFactory.Create(user));
+        }
+
+        private async Task<Uri> SendConfirm(ApplicationUser user)
+        {
             string code = await this.AppUserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
             var callbackUrl = new Uri(Url.Link("ConfirmEmailRoute", new { userId = user.Id, code = code }));
@@ -100,8 +135,7 @@ namespace AspNetIdentity.WebApi.Controllers
 
             Uri locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
 
-            return Created(locationHeader, TheModelFactory.Create(user));
-
+            return locationHeader;
         }
 
         [AllowAnonymous]

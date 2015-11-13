@@ -3,6 +3,7 @@ angular.module('jvmarket')
     $rootScope.section = $rootScope.section || {};
     $rootScope.section.name = "Login";
     console.log("LoginCtrl");
+    User.setAuthToken(null);
     $scope.user = {};
     $scope.submitLoginForm = function () {
         $scope.errorPassword = null;

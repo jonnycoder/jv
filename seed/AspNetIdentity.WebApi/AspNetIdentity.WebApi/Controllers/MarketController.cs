@@ -1,40 +1,16 @@
 ﻿using AspNetIdentity.WebApi.Infrastructure;
 using AspNetIdentity.WebApi.Providers;
-using System;
+using AspNetIdentity.WebApi.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
 using System.Web.Http;
-using System.Net.Http;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
-using AspNetIdentity.WebApi.Models;
 using System.Security.Claims;
 
 namespace AspNetIdentity.WebApi.Controllers
 {
-    class CustomerResourceResponse
-    {
-        public List<BusinessAffiliate> affiliates = new List<BusinessAffiliate>();
-        public List<BusinessProgram> programs = new List<BusinessProgram>();
-    }
-
-    class BusinessProgram {
-        public BusinessProgram(string _name)
-        {
-            this.name = _name;
-        }
-        public string name { get; set; }
-    }
-    class BusinessAffiliate {
-        public BusinessAffiliate(string _name)
-        {
-            this.name = _name;
-        }
-        public string name { get; set; }
-    }
-
     [RoutePrefix("api/market")]
     public class MarketController : BaseApiController
     {
@@ -45,36 +21,46 @@ namespace AspNetIdentity.WebApi.Controllers
         public async Task<IHttpActionResult> Resources()
         {
             var authHeader = Request.Headers.GetValues("Authorization");
-            if (null == authHeader || authHeader.Count() == 0)
+            //if (null == authHeader || authHeader.Count() == 0)
+            //{
+            //    return StatusCode(System.Net.HttpStatusCode.Unauthorized);
+            //}
+
+            var jwtString = authHeader.ElementAt(0).Replace("Bearer ", "");
+            if (string.IsNullOrEmpty(jwtString) || jwtString.Equals("null"))
             {
                 return StatusCode(System.Net.HttpStatusCode.Unauthorized);
             }
 
-            var jwtString = authHeader.ElementAt(0).Replace("Bearer ", "");
-  
-            ClaimsPrincipal principal = await Task.Run( () => jwtFormatter.Validate(jwtString));
+            ClaimsPrincipal principal = await Task.Run(() => jwtFormatter.Validate(jwtString));
             if (null == principal)
             {
                 return StatusCode(System.Net.HttpStatusCode.Unauthorized);
             }
-            string userName = principal.Identity.GetUserName();
-            string userId = principal.Identity.GetUserId();
-            CustomerResourceResponse response = new CustomerResourceResponse();
+
+
+            ModelFactory.UserResourceResponse response = new ModelFactory.UserResourceResponse();
             var roles = (from c in principal.Claims where c.Type.ToLower().Contains("role") select c.Value).ToList();
 
             if (roles.Contains("Affiliate"))
             {
-                response.affiliates.Add(new BusinessAffiliate("Bob Affiliate"));
-                response.affiliates.Add(new BusinessAffiliate("Alex Affiliate"));
-                response.affiliates.Add(new BusinessAffiliate("William Affiliate"));
+                response.affiliates = GetAffiliates(principal);
+
             }
             if (roles.Contains("Vendor"))
             {
-                response.programs.Add(new BusinessProgram("3 Marketeers LLC"));
-                response.programs.Add(new BusinessProgram("4 Of Spades LLC"));
+                
             }
 
-            return Json<CustomerResourceResponse>(response);
+            return Json<ModelFactory.UserResourceResponse>(response);
+        }
+
+        public List<AffiliateReturnModel> GetAffiliates(ClaimsPrincipal principal)
+        {
+            List<AspNetIdentity.WebApi.Infrastructure.AffilateUser> affiliateusers = MarketManager.Context.Affiliates.SqlQuery("Select * from affiliateusers").ToList();
+            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.Context.Affiliates.SqlQuery("Select * from affiliateusers").ToList().Select( a => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName });
+           
+            return affiliates.ToList();
         }
     }
 }

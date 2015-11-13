@@ -25,9 +25,6 @@ namespace AspNetIdentity.WebApi.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
-        [Display(Name = "Role Name")]
-        public string RoleName { get; set; }
-
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
@@ -64,6 +61,11 @@ namespace AspNetIdentity.WebApi.Models
         [RegularExpression(@"^http(s)?\://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(/\S*)?$", ErrorMessage ="Please enter a valid url")]
         [Display(Name = "Program url")]
         public string ProgramUrl { get; set; }
+
+        [StringLength(50, ErrorMessage = "Please enter a {0} at least {2} characters long.", MinimumLength = 10)]
+        [DataType(DataType.Text)]
+        [Display(Name = "Program name")]
+        public string ProgramName { get; set; }
 
         [StringLength(2000, ErrorMessage = "Please enter a {0} at least {2} characters long.", MinimumLength = 40)]
         [DataType(DataType.Text)]

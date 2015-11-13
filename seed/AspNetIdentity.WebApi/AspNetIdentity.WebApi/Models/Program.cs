@@ -11,13 +11,15 @@ using System.Web;
 
 namespace AspNetIdentity.WebApi.Infrastructure
 {
-    [Table(Name = "user_extension")]
-    public class UserExtension
+    public class Program
     {
         [Key]
-        [Column(Name = "UserId")]
-        public string userId { get; set; }
-
-        public string SkypeHandle { get; set; }
+        public long Id { get; set; }
+        public string Url { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string CreatorId { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
+
 }

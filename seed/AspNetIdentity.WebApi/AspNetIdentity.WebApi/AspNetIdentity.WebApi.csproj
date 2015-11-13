@@ -292,8 +292,9 @@
     <Compile Include="Controllers\ClaimsController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
-    <Compile Include="Infrastructure\UserExtensionManager.cs" />
-    <Compile Include="Infrastructure\UserExtension.cs" />
+    <Compile Include="Infrastructure\Managers.cs" />
+    <Compile Include="Models\Program.cs" />
+    <Compile Include="Models\UserExtension.cs" />
     <Compile Include="Infrastructure\ApplicationRole.cs" />
     <Compile Include="Infrastructure\ApplicationRoleManager.cs" />
     <Compile Include="Infrastructure\ApplicationUser.cs" />

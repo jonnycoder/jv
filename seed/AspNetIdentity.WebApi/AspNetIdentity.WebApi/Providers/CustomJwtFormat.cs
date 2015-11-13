@@ -55,7 +55,6 @@ namespace AspNetIdentity.WebApi.Providers
 
         public System.Security.Claims.ClaimsPrincipal Validate(string protectedText)
         {
-
             string audienceId = ConfigurationManager.AppSettings["as:AudienceId"];
 
             string symmetricKeyAsBase64 = ConfigurationManager.AppSettings["as:AudienceSecret"];
