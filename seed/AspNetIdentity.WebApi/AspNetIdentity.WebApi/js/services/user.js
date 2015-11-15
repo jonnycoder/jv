@@ -108,9 +108,7 @@ angular.module('jvmarket')
                callback(rsp);
            }
        })
-
     }
-
     
     /**
      * Log in a user
@@ -144,8 +142,7 @@ angular.module('jvmarket')
                callback(rsp);
            }
        }
-       ).error(function (err) {
-           
+       ).error(function (err) {      
            var msg = msgFromModelState(err);
 
            var rsp = { success: false, msg: msg };
@@ -153,10 +150,10 @@ angular.module('jvmarket')
                callback(rsp);
            }
        })
-
     }
 
     function msgFromModelState(err) {
+        // TODO some http response code filtering here
         var msg = null;
         if (err.modelState && err.modelState["createUserModel.Password"] && err.modelState["createUserModel.Password"].length > 0) {
             msg = err.modelState["createUserModel.Password"][0];
@@ -185,13 +182,20 @@ angular.module('jvmarket')
         if (msg == null && err.modelState && err.modelState["createUserModel.ProgramDescription"] && err.modelState["createUserModel.ProgramDescription"].length > 0) {
             msg = err.modelState["createUserModel.ProgramDescription"][0];
         }
+        if (msg == null && err.modelState && err.modelState["createUserModel.ProgramName"] && err.modelState["createUserModel.ProgramName"].length > 0) {
+            msg = err.modelState["createUserModel.ProgramName"][0];
+        }
         if (msg == null && err.modelState && err.modelState["createUserModel.IndividualDescription"] && err.modelState["createUserModel.IndividualDescription"].length > 0) {
             msg = err.modelState["createUserModel.IndividualDescription"][0];
         }
 
-
         if (err.modelState && err.modelState[0] && angular.isArray(err.modelState[0])) {
             msg = err.modelState[0][0];
+        }
+
+        if (err.error)
+        {
+            msg = error;
         }
 
         if (msg == null) {

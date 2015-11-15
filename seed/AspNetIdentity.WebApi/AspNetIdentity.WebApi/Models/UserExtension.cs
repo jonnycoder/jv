@@ -20,6 +20,12 @@ namespace AspNetIdentity.WebApi.Infrastructure
         public string SkypeHandle { get; set; }
 
         public string IndividualDescription { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string PhoneNumber { get; set; }
     }
 
     public class MarketerUser

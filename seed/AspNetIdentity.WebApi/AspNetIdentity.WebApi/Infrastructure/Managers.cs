@@ -1,6 +1,7 @@
 ﻿using MySql.AspNet.Identity;
 using MySql.Data.Entity;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,24 @@ namespace AspNetIdentity.WebApi.Infrastructure
                 return _theContext;
             }
         }
+
+        //protected override void OnModelCreating(
+        //                    DbModelBuilder modelBuilder)
+        //{
+        //   // modelBuilder.Configurations.Add(new AspnetUserRoleConfiguration());
+        //    // ...  and so on, for each configuration class
+
+        //    base.OnModelCreating(modelBuilder);
+        //}
+
+        //public class AspnetUserRoleConfiguration : EntityTypeConfiguration<AspnetUserRole>
+        //{
+        //    public AspnetUserRoleConfiguration()
+        //    {
+        //        HasKey(a => a.UserId);
+        //        HasKey(a => a.RoleId);
+        //    }
+        //}
     }
 
     public class UserExtensionManager
@@ -57,11 +76,27 @@ namespace AspNetIdentity.WebApi.Infrastructure
 
         }
 
-        public static JVContext Context
+        private static JVContext Context
         {
             get { return JVContext.Instance; }
         }
-       
+
+        public static Task<int> Update()
+        {
+            Task<int> result = null;
+            try
+            {
+                result = UserExtensionManager.Context.SaveChangesAsync();
+            }
+            finally
+            {
+
+            }
+
+            return result;
+        }
+
+        public static DbSet<UserExtension> UserExtensions { get { return UserExtensionManager.Context.UserExtensions; } }
     }
 
     public class MarketManager
@@ -71,13 +106,67 @@ namespace AspNetIdentity.WebApi.Infrastructure
 
         }
 
-        public static JVContext Context
+        private static JVContext Context
         {
             get { return JVContext.Instance; }
+        }
+
+        public static Task<int> Update()
+        {
+            Task<int> result = null;
+            try
+            {
+                result = MarketManager.Context.SaveChangesAsync();
+            }
+            finally
+            {
+
+            }
+
+            return result;
+        }
+
+        public static IEnumerable<Program> GetAllPrograms()
+        {
+            return MarketManager.Context.Programs;
+        }
+
+        public static IEnumerable<AffilateUser> GetAllAffiliates()
+        {
+            return MarketManager.Context.Affiliates.SqlQuery("Select * from affiliateusers");
         }
 
         public static DbSet<Program> Programs { get { return MarketManager.Context.Programs; } }
         public static DbSet<AffilateUser> Affiliates { get { return MarketManager.Context.Affiliates; } }
         public static DbSet<MarketerUser> Marketers { get { return MarketManager.Context.Marketers; } }
+    }
+
+    public class AspNetRoleManager
+    {
+        private AspNetRoleManager()
+        {
+
+        }
+
+        private static JVContext Context
+        {
+            get { return JVContext.Instance; }
+        }
+
+        public static Task<int> Update()
+        {
+            Task<int> result = null;
+            try
+            {
+                result = AspNetRoleManager.Context.SaveChangesAsync();
+            }
+            finally
+            {
+
+            }
+
+            return result;
+        }
+
     }
 }

@@ -9,17 +9,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace AspNetIdentity.WebApi.Infrastructure
+namespace AspNetIdentity.WebApi.Models
 {
     public class Program
     {
         [Key]
-        public long Id { get; set; }
-        public string Url { get; set; }
         public string Name { get; set; }
+        public string Url { get; set; }
         public string Description { get; set; }
         public string CreatorId { get; set; }
         public DateTime CreatedDate { get; set; }
     }
-
 }

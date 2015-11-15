@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using AspNetIdentity.WebApi.Models;
+using System.Web.Http.ModelBinding;
 using System.Security.Claims;
 
 namespace AspNetIdentity.WebApi.Controllers
@@ -34,7 +35,7 @@ namespace AspNetIdentity.WebApi.Controllers
                 return BadRequest(ModelState);
             }
             ApplicationUser lookup = AppUserManager.Find(loginUserModel.UserName, loginUserModel.Password);
-           
+
             var loginResult = new LoginResponse();
             if (lookup != null && lookup.EmailConfirmed)
             {
@@ -52,9 +53,9 @@ namespace AspNetIdentity.WebApi.Controllers
             else
             {
                 return StatusCode(System.Net.HttpStatusCode.Unauthorized);
-            }    
+            }
         }
-      
+
         [AllowAnonymous]
         [Route("create")]
         public async Task<IHttpActionResult> CreateUser(CreateUserBindingModel createUserModel)
@@ -63,6 +64,33 @@ namespace AspNetIdentity.WebApi.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            bool IsMarketer = false;
+            if (null != createUserModel.Marketer && !bool.TryParse(createUserModel.Marketer, out IsMarketer))
+            {
+                return BadRequest();
+            }
+
+            bool IsAffiliate = false;
+            if (null != createUserModel.Affiliate && !bool.TryParse(createUserModel.Affiliate, out IsAffiliate))
+            {
+                return BadRequest();
+            }
+
+            if (!IsMarketer && !IsAffiliate)
+            {
+                return BadRequest("Affiliate or Marketer must be selected");
+            }
+
+            // check if the user created a program
+            if (IsMarketer)
+            {
+                string error = ValidateCreateModel(createUserModel, Role.Vendor);
+                if (!String.IsNullOrEmpty(error))
+                {
+                    return BadRequest(ModelState);
+                }
             }
 
             var user = new ApplicationUser()
@@ -74,7 +102,7 @@ namespace AspNetIdentity.WebApi.Controllers
                 Level = 3,
                 JoinDate = DateTime.Now.Date
             };
-            
+
             IdentityResult addUserResult = await this.AppUserManager.CreateAsync(user, createUserModel.Password);
 
             if (!addUserResult.Succeeded)
@@ -83,30 +111,42 @@ namespace AspNetIdentity.WebApi.Controllers
             }
 
             // extend the user with specific information
-            var userExt = new UserExtension();
-            userExt.SkypeHandle = createUserModel.SkypeHandle;
-            userExt.UserId = user.Id;
-            userExt.IndividualDescription = createUserModel.IndividualDescription;
-            UserExtensionManager.Context.UserExtensions.Add(userExt);
+            var userExt = new UserExtension()
+            {
+                SkypeHandle = createUserModel.SkypeHandle,
+                UserId = user.Id,
+                IndividualDescription = createUserModel.IndividualDescription,
+                FirstName = createUserModel.FirstName,
+                LastName = createUserModel.LastName,
+                PhoneNumber = createUserModel.PhoneNumber
+            };
+
+            UserExtensionManager.UserExtensions.Add(userExt);
 
             try
             {
-                int resultCount = await UserExtensionManager.Context.Update();
+                int resultCount = await UserExtensionManager.Update();
             }
             catch (Exception ex)
             {
                 // todo delete user here
-            }
-            Uri locationHeader = await SendConfirm(user);
+                try
+                {
+                    await AppUserManager.DeleteAsync(user);
+                }
+                catch
+                {
+                    // do our best to not create secondary errors
+                }
 
-            bool IsMarketer = false;
-            if (null != createUserModel.Marketer && !bool.TryParse(createUserModel.Marketer, out IsMarketer))
-            {
-                return BadRequest();
+                return InternalServerError();
             }
+
             // check if the user created a program
             if (IsMarketer)
             {
+                AppUserManager.AddToRole(user.Id, "Vendor");
+
                 Program newProgram = new Program()
                 {
                     CreatedDate = DateTime.Now,
@@ -116,11 +156,46 @@ namespace AspNetIdentity.WebApi.Controllers
                     Name = createUserModel.ProgramName
                 };
 
-                MarketManager.Context.Programs.Add(newProgram);
-                await MarketManager.Context.Update();
+                MarketManager.Programs.Add(newProgram);
+                await MarketManager.Update();
             }
 
+            if (IsAffiliate)
+            {
+                AppUserManager.AddToRole(user.Id, "Affiliate");
+            }
+
+            Uri locationHeader = await SendConfirm(user);
+
             return Created(locationHeader, TheModelFactory.Create(user));
+        }
+
+        private string ValidateCreateModel(CreateUserBindingModel createModel, Role role)
+        {
+            string msg = String.Empty;
+            if (role.Equals(Role.Vendor))
+            {
+                if (String.IsNullOrEmpty(createModel.ProgramDescription))
+                {
+                    msg = "Please enter a Program Description";
+                    ModelState.AddModelError("createUserModel.ProgramDescription", msg);
+                }
+
+                if (String.IsNullOrEmpty(createModel.ProgramName))
+                {
+                    msg = "Please enter a Program Name";
+                    ModelState.AddModelError("createUserModel.ProgramName", msg);
+                }
+
+                if (String.IsNullOrEmpty(createModel.ProgramUrl))
+                {
+                    msg = "Please enter a Program Url";
+                    ModelState.AddModelError("createUserModel.ProgramUrl", msg);
+                }
+
+            }
+
+            return msg;
         }
 
         private async Task<Uri> SendConfirm(ApplicationUser user)

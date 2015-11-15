@@ -293,6 +293,7 @@
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Infrastructure\Managers.cs" />
+    <Compile Include="Infrastructure\Role.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\UserExtension.cs" />
     <Compile Include="Infrastructure\ApplicationRole.cs" />

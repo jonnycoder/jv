@@ -72,6 +72,7 @@ namespace AspNetIdentity.WebApi.Models
         [Display(Name = "Program description")]
         public string ProgramDescription { get; set; }
 
+        [Required]
         [StringLength(2000, ErrorMessage = "Please enter a {0} at least {2} characters long.", MinimumLength = 40)]
         [DataType(DataType.Text)]
         [Display(Name = "Individual description")]

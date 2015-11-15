@@ -24,7 +24,7 @@ namespace AspNetIdentity.WebApi.Models
         public class UserResourceResponse
         {
             public List<AffiliateReturnModel> affiliates = new List<AffiliateReturnModel>();
-            public List<BusinessProgramReturnModel> programs = new List<BusinessProgramReturnModel>();
+            public List<ProgramReturnModel> programs = new List<ProgramReturnModel>();
         }
 
         public AffiliateReturnModel CreateAffiliate(ApplicationUser appUser, UserExtension extension)
@@ -99,7 +99,7 @@ namespace AspNetIdentity.WebApi.Models
         public string IndividualDescription { get; set; }
     }
 
-    public class BusinessProgramReturnModel
+    public class ProgramReturnModel
     {
         public string ProgramUrl { get; set; }
         public string ProgramName { get; set; }

@@ -44,23 +44,29 @@ namespace AspNetIdentity.WebApi.Controllers
 
             if (roles.Contains("Affiliate"))
             {
-                response.affiliates = GetAffiliates(principal);
+                response.programs = GetPrograms();
 
             }
             if (roles.Contains("Vendor"))
             {
-                
+                response.affiliates = GetAffiliates(); 
             }
 
             return Json<ModelFactory.UserResourceResponse>(response);
         }
 
-        public List<AffiliateReturnModel> GetAffiliates(ClaimsPrincipal principal)
+        public List<AffiliateReturnModel> GetAffiliates()
         {
-            List<AspNetIdentity.WebApi.Infrastructure.AffilateUser> affiliateusers = MarketManager.Context.Affiliates.SqlQuery("Select * from affiliateusers").ToList();
-            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.Context.Affiliates.SqlQuery("Select * from affiliateusers").ToList().Select( a => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName });
+            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().ToList().Select( a => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName });
            
             return affiliates.ToList();
+        }
+
+        public List<ProgramReturnModel> GetPrograms()
+        {
+            IEnumerable<ProgramReturnModel> programs = MarketManager.Programs.ToList().Select(p => new ProgramReturnModel {  CreatedDate = p.CreatedDate.ToShortDateString(), ProgramDescription = p.Description, ProgramName = p.Name, ProgramUrl = p.Url });
+
+            return programs.ToList();
         }
     }
 }
