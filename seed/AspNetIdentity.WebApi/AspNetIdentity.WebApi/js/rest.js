@@ -19,7 +19,7 @@ angular.module('jvmarket')
             if (config.url.indexOf($rootScope.appConfig.api) > 0){
                 config.headers = config.headers || {};
 
-                if (angular.isString($window.localStorage.authToken) && $window.localStorage.authToken !== ""){
+                if (angular.isString($window.localStorage.authToken) && $window.localStorage.authToken !== "" && $window.localStorage.authToken !== "null") {
                     config.headers['Authorization'] = "Bearer " +  $window.localStorage.authToken;
                 }
          

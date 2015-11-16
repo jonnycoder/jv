@@ -1,6 +1,8 @@
 angular.module('jvmarket', [
                                 'ngRoute',
-                                'angularMoment'
+                                'angularMoment',
+                                'ngAnimate',
+                                'ui.bootstrap'
 ])
 .config(function ($routeProvider, $httpProvider, $compileProvider) {
     $httpProvider.interceptors.push('authInterceptor');
@@ -15,6 +17,18 @@ angular.module('jvmarket', [
     }).when("/market", {
         controller: "MarketCtrl",
         templateUrl: "js/views/market.html"
+    }).when("/account", {
+        controller: "AccountCtrl",
+        templateUrl: "js/views/Account.html"
+    }).when("/account/purchase", {
+        controller: "PurchaseCtrl",
+        templateUrl: "js/views/Purchase.html"
+    }).when("/about", {
+        controller: "InfoCtrl",
+        templateUrl: "js/views/About.html"
+    }).when("/contact", {
+        controller: "InfoCtrl",
+        templateUrl: "js/views/Contact.html"
     });
 })
 .run(function ($rootScope, $document, $window, $location, User) {
@@ -24,11 +38,7 @@ angular.module('jvmarket', [
         api: "jv.com/api",
         version: "0.5"
     };
-
-    //$rootScope.section = {
-    //    name: ""
-    //};
-
+    
     //$rootScope.$on("$routeChangeStart", function (evt, next, current) {
     //    if (angular.isObject(next) && angular.isObject(next.$$route)) {
 
@@ -46,17 +56,12 @@ angular.module('jvmarket', [
     //        }
     //    }
     //});
-
-
     // retrieve client details for this app instance
     $rootScope.hasToken = function () {
        
         var test = $window.localStorage.getItem("authToken") != null;
-        return test;
-       
-    };
-
-      
+        return test; 
+    };  
 
     $rootScope.logout = function () {
         $rootScope.toggle('mainSidebar', 'off');
@@ -84,5 +89,4 @@ angular.module('jvmarket', [
     $rootScope.setLocalStorage = function (key, obj) {
         $window.localStorage.setItem(key, obj);
     }
-
 });
