@@ -4,16 +4,19 @@
 <article class="post" ng-repeat="a in resources.affiliates">
     <div class="col-lg-12">
         <div class="post_excerpt">
-            {{a.IndividualDescription}}
-            <br/>
-            <br />
-            <div class="row">
-                <div class="col-lg-6">
-                    Name: {{a.FirstName}}&nbsp;{{a.LastName}}<br />
-                    Skype Contact: {{a.SkypeHandle}}<br />
-                    Email: {{a.Email}}
+            
+                {{a.IndividualDescription}}
+                <br />
+                <br />
+                <div class="row">
+                    <div class="col-lg-6">
+                        <em>
+                            Name: {{a.FirstName}}&nbsp;{{a.LastName}}<br />
+                            Skype Contact: {{a.SkypeHandle}}<br />
+                            Email: {{a.Email}}
+                        </em>
 
-                </div>
+            </div>
             </div>
         </div>
     </div>

@@ -256,7 +256,9 @@
     <Content Include="js\views\contact.html" />
     <Content Include="js\views\contactSide.html" />
     <Content Include="js\views\login.html" />
+    <Content Include="js\views\affiliates.html" />
     <Content Include="js\views\market.html" />
+    <Content Include="js\views\programs.html" />
     <Content Include="js\views\purchase.html" />
     <Content Include="js\views\register.html" />
     <Content Include="js\views\socialFooter.html" />

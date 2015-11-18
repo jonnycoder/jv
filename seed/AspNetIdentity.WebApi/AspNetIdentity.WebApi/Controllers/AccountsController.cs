@@ -57,7 +57,7 @@ namespace AspNetIdentity.WebApi.Controllers
             var identity = await validatedUser.GenerateUserIdentityAsync(AppUserManager, "password");
             Microsoft.Owin.Security.AuthenticationProperties properties = new Microsoft.Owin.Security.AuthenticationProperties();
             properties.IssuedUtc = DateTime.Now.ToUniversalTime();
-            properties.ExpiresUtc = DateTime.Now.AddSeconds(30).ToUniversalTime();
+            properties.ExpiresUtc = DateTime.Now.AddMinutes(5).ToUniversalTime();
             return jwt.Protect(new Microsoft.Owin.Security.AuthenticationTicket(identity, properties));
         }
 
