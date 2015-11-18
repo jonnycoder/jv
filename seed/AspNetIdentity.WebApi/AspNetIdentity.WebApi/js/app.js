@@ -38,6 +38,10 @@ angular.module('jvmarket', [
         api: "jv.com/api",
         version: "0.5"
     };
+
+    $rootScope.$on('loginRequired', function () {
+        $location.path('/login');
+    });
     
     //$rootScope.$on("$routeChangeStart", function (evt, next, current) {
     //    if (angular.isObject(next) && angular.isObject(next.$$route)) {

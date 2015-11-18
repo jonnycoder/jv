@@ -19,6 +19,7 @@ namespace AspNetIdentity.WebApi.Controllers
     {
         public int httpResult { get; set; }
         public string token { get; set; }
+        public UserExtension user { get; set; }
     }
 
     [RoutePrefix("api/accounts")]
@@ -39,14 +40,8 @@ namespace AspNetIdentity.WebApi.Controllers
             var loginResult = new LoginResponse();
             if (lookup != null && lookup.EmailConfirmed)
             {
-                loginResult.httpResult = Convert.ToInt16(System.Net.HttpStatusCode.OK);
-                CustomJwtFormat jwt = new CustomJwtFormat("http://jv.com");
-                var identity = await lookup.GenerateUserIdentityAsync(AppUserManager, "password");
-                Microsoft.Owin.Security.AuthenticationProperties properties = new Microsoft.Owin.Security.AuthenticationProperties();
-                properties.IssuedUtc = DateTime.Now.ToUniversalTime();
-                properties.ExpiresUtc = DateTime.Now.AddHours(6).ToUniversalTime();
-
-                loginResult.token = jwt.Protect(new Microsoft.Owin.Security.AuthenticationTicket(identity, properties));
+                loginResult.token = await  GenerateUserToken(lookup);
+                loginResult.user = UserExtensionManager.UserExtensions.Where(e => e.UserId == lookup.Id).FirstOrDefault();
                 loginResult.httpResult = Convert.ToInt16(System.Net.HttpStatusCode.OK);
                 return Json<LoginResponse>(loginResult);
             }
@@ -54,6 +49,16 @@ namespace AspNetIdentity.WebApi.Controllers
             {
                 return StatusCode(System.Net.HttpStatusCode.Unauthorized);
             }
+        }
+
+        private async Task<string> GenerateUserToken(ApplicationUser validatedUser)
+        {
+            CustomJwtFormat jwt = new CustomJwtFormat("http://jv.com");
+            var identity = await validatedUser.GenerateUserIdentityAsync(AppUserManager, "password");
+            Microsoft.Owin.Security.AuthenticationProperties properties = new Microsoft.Owin.Security.AuthenticationProperties();
+            properties.IssuedUtc = DateTime.Now.ToUniversalTime();
+            properties.ExpiresUtc = DateTime.Now.AddSeconds(30).ToUniversalTime();
+            return jwt.Protect(new Microsoft.Owin.Security.AuthenticationTicket(identity, properties));
         }
 
         [AllowAnonymous]

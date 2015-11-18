@@ -1,0 +1,21 @@
+﻿<br />
+<br />
+<article class="post" ng-repeat="r in resources.programs">
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="col-lg-6">
+                <h1 class="post-title">
+                    <a class="hovercolor" href="programs/details">{{r.ProgramName}}</a>
+                </h1>
+            </div>
+            <div class="col-lg-6">
+                <time class="post_date" datetime="2015-10-18">
+                    {{r.CreatedDate}}
+                </time>
+            </div>
+        </div>
+        <div class="post_excerpt">
+            {{r.ProgramDescription}}
+        </div>
+    </div>
+</article>

@@ -47,17 +47,13 @@ angular.module('jvmarket')
 
             console.log("responseError: " + JSON.stringify(response))
             // paths to be excluded from this 401 redirect
-            //var excludePaths = [
-            //    $rootScope.appConfig.api+"/users/login"
-            //];
+            var excludePaths = [
+                $rootScope.appConfig.api+"/accounts/login"
+            ];
 
-            //if (response.status === 401 && excludePaths.indexOf(response.config.url) < 0) {
-            //    var deferred = $q.defer();
-                 
-            //    $rootScope.reAuthenticate();
-         
-            //    return deferred.promise;
-            //}
+            if (response.status === 401 && excludePaths.indexOf(response.config.url) < 0) {
+                $rootScope.$emit('loginRequired');
+            }
          
             //if (response.status === 423) {
             //    console.log("interceptor response, got the 423", response.data);

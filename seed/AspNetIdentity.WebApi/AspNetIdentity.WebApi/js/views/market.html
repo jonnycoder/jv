@@ -17,11 +17,9 @@
 
     <div class="container">
         <div class="wrapper">
-
-
             <div class="row">
-                <uib-tabset justified="true">
-                    <uib-tab ng-show="resources.affiliates != null && resources.affiliates.length > 0">
+                <!--<uib-tabset justified="true">
+                    <uib-tab disable="resources != null && resources.affiliates != null && resources.affiliates.length == 0" >
                         <uib-tab-heading><h2 class="grey text-center">Affiliates</h2></uib-tab-heading>
                         <br />
                         <br />
@@ -45,7 +43,7 @@
                             </div>
                         </article>
                     </uib-tab>
-                    <uib-tab heading="Programs" ng-show="resources.programs != null && resources.programs.length > 0">
+                    <uib-tab id="programsTab" heading="Programs" ng-show="resources != null && resources.programs != null && resources.programs.length > 0">
                         <uib-tab-heading><h2 class="grey text-center">Programs</h2></uib-tab-heading>
                         <br />
                         <br />
@@ -68,6 +66,12 @@
                                 </div>
                             </div>
                         </article>
+                    </uib-tab>
+                </uib-tabset>-->
+
+                <uib-tabset justified="true">
+                    <uib-tab ng-repeat="pane in panes" heading="{{pane.title}}" active="pane.active">
+                        <div ng-include="pane.content"></div>
                     </uib-tab>
                 </uib-tabset>
 

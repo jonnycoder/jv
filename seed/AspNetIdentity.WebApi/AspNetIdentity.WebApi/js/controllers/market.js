@@ -12,31 +12,17 @@ angular.module('jvmarket')
     Market.getResources(function (response) {
         if (response.success) {
             $scope.resources = response.data;
+
+            $scope.panes = [];
+
+            if ($scope.resources && $scope.resources.affiliates && $scope.resources.affiliates.length > 0 ) {
+                $scope.panes.push(   { title: "AFFILIATES", content: "/js/views/affiliates.html", active: true });  
+            }
+
+            if ($scope.resources && $scope.resources.programs && $scope.resources.programs.length > 0) {
+                $scope.panes.push({ title: "PROGRAMS", content: "/js/views/programs.html", active: ($scope.panes.length == 0) });
+            }
         }
     });
-    //User.authPromise().then(function(){
-    //    mixpanel.track("View Dashboard");
-    //    $scope.accountMsg = "Logged in as: " + User.email;
-    //    Appointments.getAppointments(false).then(
-    //        function (results) {
-    //            $scope.upcomingAppts = results;
-    //        },
-    //        function (error) {
-    //            console.log("error getting upcoming appointments");
-    //        });
-    //});
-
-    //$scope.bookNewAppt = function bookNewAppt() {
-    //    $location.path("/appts/new");
-    //};
-
-    //$scope.gotoMeds = function gotoMeds() {
-    //    $location.path("/meds");
-    //};
-
-    //$scope.viewAppt = function viewAppt(appt) {
-    //    $rootScope.currentAppointment = appt;
-    //    $location.path("/appt/view");
-    //};
 
 });
