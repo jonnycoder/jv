@@ -53,8 +53,15 @@ namespace AspNetIdentity.WebApi.Providers
             return null;
         }
 
+
+        /// <summary>
+        /// Validate
+        /// </summary>
+        /// <param name="protectedText">the encrypted JWT</param>
+        /// <returns>A Claims principal sourced from the jwt </returns>
         public System.Security.Claims.ClaimsPrincipal Validate(string protectedText)
         {
+        
             string audienceId = ConfigurationManager.AppSettings["as:AudienceId"];
 
             string symmetricKeyAsBase64 = ConfigurationManager.AppSettings["as:AudienceSecret"];
@@ -70,8 +77,7 @@ namespace AspNetIdentity.WebApi.Providers
             {
                 return null;
             }
-            return claimsPrincipal;
-         
+            return claimsPrincipal;         
         }
     }
 }

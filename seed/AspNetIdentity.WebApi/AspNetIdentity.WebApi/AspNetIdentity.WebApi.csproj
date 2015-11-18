@@ -223,6 +223,9 @@
     <Content Include="js\app.js" />
     <Content Include="js\bootstrap.js" />
     <Content Include="js\bootstrap.min.js" />
+    <Content Include="js\controllers\purchase.js" />
+    <Content Include="js\controllers\info.js" />
+    <Content Include="js\controllers\account.js" />
     <Content Include="js\controllers\market.js" />
     <Content Include="js\controllers\login.js" />
     <Content Include="js\controllers\register.js" />
@@ -247,9 +250,14 @@
     <Content Include="js\rest.js" />
     <Content Include="js\services\market.js" />
     <Content Include="js\services\user.js" />
+    <Content Include="js\ui-bootstrap-0.14.3.min.js" />
+    <Content Include="js\views\account.html" />
+    <Content Include="js\views\about.html" />
+    <Content Include="js\views\contact.html" />
     <Content Include="js\views\contactSide.html" />
     <Content Include="js\views\login.html" />
     <Content Include="js\views\market.html" />
+    <Content Include="js\views\purchase.html" />
     <Content Include="js\views\register.html" />
     <Content Include="js\views\socialFooter.html" />
     <Content Include="packages.config" />
@@ -292,6 +300,7 @@
     <Compile Include="Controllers\ClaimsController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
+    <Compile Include="Infrastructure\JwtRequiredAttribute.cs" />
     <Compile Include="Infrastructure\Managers.cs" />
     <Compile Include="Infrastructure\Role.cs" />
     <Compile Include="Models\Program.cs" />
