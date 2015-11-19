@@ -21,6 +21,8 @@ namespace AspNetIdentity.WebApi.Infrastructure
         public DbSet<Program> Programs { get; set; }
         public DbSet<MarketerUser> Marketers { get; set; }
         public DbSet<AffilateUser> Affiliates { get; set; }
+        public DbSet<AffiliateUnlock> UserUserUnlocks { get; set; }
+        public DbSet<ProgramUnlock> UserProgramUnlocks { get; set; }
         public Task<int> Update()
         {
             Task<int> result = null;
@@ -131,9 +133,60 @@ namespace AspNetIdentity.WebApi.Infrastructure
             return MarketManager.Context.Programs;
         }
 
+        public static IEnumerable<ProgramUnlock> GetUnlockedPrograms(string forUser)
+        {
+            return MarketManager.Context.UserProgramUnlocks.SqlQuery(String.Format("Select * from userprogramunlocks where payinguser = '{0}'", forUser));
+        }
+
         public static IEnumerable<AffilateUser> GetAllAffiliates()
         {
             return MarketManager.Context.Affiliates.SqlQuery("Select * from affiliateusers");
+        }
+
+        public static IEnumerable<AffiliateUnlock> GetUnlockedAffiliates(string forUser)
+        {
+            return MarketManager.Context.UserUserUnlocks.SqlQuery(String.Format("Select * from useruserunlocks where payinguser = '{0}'", forUser));
+        }
+
+
+        public static List<AffiliateReturnModel> GetAffiliates()
+        {
+            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().ToList().Select(a => new AffiliateReturnModel { IndividualDescription = a.IndividualDescription });
+
+            return affiliates.ToList();
+        }
+
+        public static List<AffiliateReturnModel> UnlockedAffiliates(string forUser)
+        {
+            IEnumerable<string> unlocked = MarketManager.GetUnlockedAffiliates(forUser).Select(u => u.RevealedUser).ToList();
+
+            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().Where(a => unlocked.Contains(a.Id)).ToList().Select(a => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName });
+
+            return affiliates.ToList();
+        }
+
+        public static List<ProgramReturnModel> GetPrograms()
+        {
+            IEnumerable<ProgramReturnModel> programs = MarketManager.Programs.ToList().Select(p => new ProgramReturnModel { CreatedDate = p.CreatedDate.ToShortDateString(), ProgramDescription = p.Description, ProgramName = p.Name });
+
+            return programs.ToList();
+        }
+
+        public static List<ProgramReturnModel> UnlockedPrograms(string forUser, ApplicationUserManager appUserManager)
+        {
+            // get the list of user revealed programs
+            IEnumerable<ProgramUnlock> unlocked = MarketManager.GetUnlockedPrograms(forUser);
+            IEnumerable<string> unlockedProgramNames = unlocked.Select(p => p.ProgramName);
+            // get those programs
+            IEnumerable<Program> unlockedPrograms = MarketManager.Programs.Where(p => unlockedProgramNames.Contains(p.Name));
+     
+            // and fill in with the contact info for the program creator
+            IEnumerable<ProgramReturnModel> returnPrograms = from p in unlockedPrograms
+                                                             join ue in UserExtensionManager.UserExtensions on p.CreatorId equals ue.UserId
+                                                             select
+                                                             new ProgramReturnModel { CreatedDate = p.CreatedDate.ToShortDateString(), ProgramDescription = p.Description, ProgramName = p.Name, ProgramUrl = p.Url, CreatorFullName = ue.FirstName + " " + ue.LastName, CreatorPhoneNumber = ue.PhoneNumber, CreatorSkypeHandle = ue.SkypeHandle };
+
+            return returnPrograms.ToList();
         }
 
         public static DbSet<Program> Programs { get { return MarketManager.Context.Programs; } }

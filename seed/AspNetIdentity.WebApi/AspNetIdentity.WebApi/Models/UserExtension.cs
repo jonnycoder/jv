@@ -37,6 +37,22 @@ namespace AspNetIdentity.WebApi.Models
         public string UserId { get; set; }
     }
 
+    public class ProgramUnlock
+    {
+        [Key]
+        public string PayingUser { get; set; }
+
+        public string ProgramName { get; set; }
+    }
+
+    public class AffiliateUnlock
+    {
+        [Key]
+        public string PayingUser { get; set; }
+
+        public string RevealedUser { get; set; }
+    }
+
     public class AffilateUser
     {
         public string Id { get; set; }

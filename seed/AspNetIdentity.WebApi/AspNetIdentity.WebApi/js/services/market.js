@@ -36,7 +36,6 @@ angular.module('jvmarket')
            }
        }
        ).error(function (err) {
-
           // var msg = msgFromModelState(err);
 
            var rsp = { success: false, err: err };
@@ -44,7 +43,5 @@ angular.module('jvmarket')
                callback(rsp);
            }
        })
-
     }
-
 });
