@@ -79,10 +79,10 @@
                     <li class="dropdown">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">ACCOUNT <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li>
+                            <li ng-show="!hasCredits">
                                 <a href="/#/account/purchase">Pay For access</a>
                             </li>
-                            <li>
+                            <li ng-show="userLoggedIn">
                                 <a href="/#/account">Account Info</a>
                             </li>
                         </ul>

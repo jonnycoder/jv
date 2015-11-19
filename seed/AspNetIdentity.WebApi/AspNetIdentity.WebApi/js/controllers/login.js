@@ -1,9 +1,10 @@
 angular.module('jvmarket')
-.controller('LoginCtrl', function ($scope, $rootScope, $location, $window, $http, User) {
+.controller('LoginCtrl', function ($scope, $rootScope, $location, $window, $http, $timeout, User) {
     $rootScope.section = $rootScope.section || {};
     $rootScope.section.name = "Login";
     console.log("LoginCtrl");
     User.setAuthToken(null);
+    $rootScope.userLoggedIn = false;
     $scope.user = {};
     $scope.submitLoginForm = function () {
         $scope.errorPassword = null;
@@ -12,9 +13,13 @@ angular.module('jvmarket')
         $scope.createConfirm = null;
         User.loginUser($scope.user, function (loginRspModel) {
             if (loginRspModel.success) {
+                $rootScope.hasCredits = User.hasCredits();
                 $rootScope.$broadcast('event:auth-success', loginRspModel);
-                $location.url("/market");
                 $scope.errorLogin = "Successful login";
+                $rootScope.userLoggedIn = true;
+                $timeout(function () {
+                    $location.url("/market");
+                }, 750);
             }
             else {
                 $scope.errorLogin = loginRspModel.msg;

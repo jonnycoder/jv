@@ -19,7 +19,7 @@ namespace AspNetIdentity.WebApi.Controllers
     {
         public int httpResult { get; set; }
         public string token { get; set; }
-        public UserExtension user { get; set; }
+        public ExtendedUserReturnModel user { get; set; }
     }
 
     [RoutePrefix("api/accounts")]
@@ -41,7 +41,7 @@ namespace AspNetIdentity.WebApi.Controllers
             if (lookup != null && lookup.EmailConfirmed)
             {
                 loginResult.token = await  GenerateUserToken(lookup);
-                loginResult.user = UserExtensionManager.UserExtensions.Where(e => e.UserId == lookup.Id).FirstOrDefault();
+                loginResult.user = TheModelFactory.Create( lookup, UserExtensionManager.UserExtensions.Where(e => e.UserId == lookup.Id).FirstOrDefault());
                 loginResult.httpResult = Convert.ToInt16(System.Net.HttpStatusCode.OK);
                 return Json<LoginResponse>(loginResult);
             }
@@ -172,7 +172,7 @@ namespace AspNetIdentity.WebApi.Controllers
 
             Uri locationHeader = await SendConfirm(user);
 
-            return Created(locationHeader, TheModelFactory.Create(user));
+            return Created(locationHeader, TheModelFactory.Create(user, userExt));
         }
 
         private string ValidateCreateModel(CreateUserBindingModel createModel, Role role)

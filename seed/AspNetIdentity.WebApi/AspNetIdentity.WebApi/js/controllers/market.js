@@ -5,6 +5,7 @@ angular.module('jvmarket')
     console.log("MarketCtrl");
     $scope.user = {};
     $scope.resources = null;
+
     if (!User.isAuthenticated) {
         $location.url("/login");
     }

@@ -130,12 +130,12 @@ angular.module('jvmarket')
                 return str.join("&");
             },
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-
         })
        .success(function (data) {
 
            var msg = "Welcome ";//+ data.userName;
            var rsp = { success: true, msg: msg };
+           self.globals.user = data.user;
            self.isAuthenticated = true;
            self.setAuthToken( data.token );
            if (angular.isFunction(callback)) {
@@ -151,6 +151,12 @@ angular.module('jvmarket')
            }
        })
     }
+
+    self.hasCredits = function () {
+        if (this.globals.user == null) { return false; }
+        if (angular.isObject(this.globals.user) && angular.isString(this.globals.user.Credits) && this.globals.user.Credits == "0") { return false; }
+        return true;
+    };
 
     function msgFromModelState(err) {
         // TODO some http response code filtering here
@@ -253,30 +259,32 @@ angular.module('jvmarket')
      * @memberOf User#
      * @param {Function} callback The function to call upon success or failure
      */
-    self.logout = function (callback) {
-        // make logout call to server to clear session cookies there
-        $http.put($rootScope.config.api + "/users/logout", {}, {}).success(function () {
-            // reset user auth
-            self.isAuthenticated = false;
-            $rootScope.userIsAuthenticated = false; // need this because scoping issue prevents nav bars from triggering
-            self.deleteAuthToken();
-            if (angular.isFunction(callback)) {
-                callback(true);
-            }
-        })
-        .error(function () {
-            // reset user auth
-            self.isAuthenticated = false;
-            $rootScope.userIsAuthenticated = false; // need this because scoping issue prevents nav bars from triggering
-            self.deleteAuthToken();
-            if (angular.isFunction(callback)) {
-                callback(false);
-            }
-        });
+    //self.logout = function (callback) {
+    //    // make logout call to server to clear session cookies there
+    //    $http.put($rootScope.config.api + "/users/logout", {}, {}).success(function () {
+    //        // reset user auth
+    //        self.isAuthenticated = false;
+    //        $rootScope.userIsAuthenticated = false; // need this because scoping issue prevents nav bars from triggering
+    //        self.deleteAuthToken();
+    //        if (angular.isFunction(callback)) {
+    //            callback(true);
+    //        }
+    //    })
+    //    .error(function () {
+    //        // reset user auth
+    //        self.isAuthenticated = false;
+    //        $rootScope.userIsAuthenticated = false; // need this because scoping issue prevents nav bars from triggering
+    //        self.deleteAuthToken();
+    //        if (angular.isFunction(callback)) {
+    //            callback(false);
+    //        }
+    //    });
 
-        self.username = "";
-        self.userID = -1;
-    };
+    //    self.username = "";
+    //    self.userID = -1;
+    //};
+
+
 
     self.resetDevice = function () {
         self.isAuthenticated = false;

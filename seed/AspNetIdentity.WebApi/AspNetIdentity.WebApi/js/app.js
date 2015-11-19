@@ -40,6 +40,7 @@ angular.module('jvmarket', [
     };
 
     $rootScope.$on('loginRequired', function () {
+        $rootScope.userLoggedIn = false;
         $location.path('/login');
     });
     
