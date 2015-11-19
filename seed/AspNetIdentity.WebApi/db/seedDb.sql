@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `aspnetuserroles` (
   CONSTRAINT `IdentityRole_Users` FOREIGN KEY (`RoleId`) REFERENCES `aspnetroles` (`Id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dumping data for table jv.aspnetuserroles: ~2 rows (approximately)
+-- Dumping data for table jv.aspnetuserroles: ~8 rows (approximately)
 DELETE FROM `aspnetuserroles`;
 /*!40000 ALTER TABLE `aspnetuserroles` DISABLE KEYS */;
 INSERT INTO `aspnetuserroles` (`UserId`, `RoleId`) VALUES
@@ -99,7 +99,9 @@ INSERT INTO `aspnetuserroles` (`UserId`, `RoleId`) VALUES
 	('619de077-a4ed-4421-84b2-e40bf9aa168b', '2'),
 	('8fa8d23f-7840-436f-9cd6-2eb888e62175', '1'),
 	('8fa8d23f-7840-436f-9cd6-2eb888e62175', '2'),
-	('93ba71dd-411c-4978-a2ff-4c2d659eb885', '2');
+	('93ba71dd-411c-4978-a2ff-4c2d659eb885', '2'),
+	('deada506-32ec-48de-98d5-195b36512171', '1'),
+	('deada506-32ec-48de-98d5-195b36512171', '2');
 /*!40000 ALTER TABLE `aspnetuserroles` ENABLE KEYS */;
 
 
@@ -120,14 +122,15 @@ CREATE TABLE IF NOT EXISTS `aspnetusers` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table jv.aspnetusers: ~23 rows (approximately)
+-- Dumping data for table jv.aspnetusers: ~5 rows (approximately)
 DELETE FROM `aspnetusers`;
 /*!40000 ALTER TABLE `aspnetusers` DISABLE KEYS */;
 INSERT INTO `aspnetusers` (`Id`, `Email`, `EmailConfirmed`, `PasswordHash`, `SecurityStamp`, `PhoneNumber`, `PhoneNumberConfirmed`, `TwoFactorEnabled`, `LockoutEndDateUtc`, `LockoutEnabled`, `AccessFailedCount`, `UserName`) VALUES
 	('1a5dccd4-9c41-4567-9801-c9b86d11de54', 'b@jv.com', 1, 'AIvLNYmHpkSBL0inS4rdWLT2xDjD7mQUDrxaBG+Sv8cRvdX7XA++NGvPCY60mzbmug==', '8ecc6d61-f65c-4ff9-a27d-c83cd18eb05c', '', 0, 0, NULL, 1, 0, 'billaff'),
 	('619de077-a4ed-4421-84b2-e40bf9aa168b', 'jb4@jv.com', 1, 'APcAdy3SgRyWcLR4Oxno4e3yN9Tq2RgJIY6InQsxoYqzFnTuUnIFmAQvgevgfxvq4g==', '15a7ff01-faed-4614-955a-fced153e7f90', '', 0, 0, NULL, 1, 0, 'jbrady4'),
 	('8fa8d23f-7840-436f-9cd6-2eb888e62175', 'd@csiportals.com', 1, 'APsRdYgHNVD8kPw9fg5TFY8hwGVxd4ZCHBuCrzJOrNHHyTFdwT5Xr1+oG0xjcnBbeQ==', '83a377c9-6688-46c9-bbcc-28912837d204', NULL, 0, 0, NULL, 1, 0, 'dawn'),
-	('93ba71dd-411c-4978-a2ff-4c2d659eb885', 'm@jv.com', 1, 'AMQbVnJZ3XxihdwyvJqkoZ3SkcnSD5rP3p4ulrMcLDWuSKYSGIa9gXlKLEupe8ffyg==', '5056b8dc-d9ca-44eb-bea2-7441feb5ee1d', '', 0, 0, NULL, 1, 0, 'mollym');
+	('93ba71dd-411c-4978-a2ff-4c2d659eb885', 'm@jv.com', 1, 'AMQbVnJZ3XxihdwyvJqkoZ3SkcnSD5rP3p4ulrMcLDWuSKYSGIa9gXlKLEupe8ffyg==', '5056b8dc-d9ca-44eb-bea2-7441feb5ee1d', '', 0, 0, NULL, 1, 0, 'mollym'),
+	('deada506-32ec-48de-98d5-195b36512171', 'bd@jv.com', 1, 'AGkBjjQKyHvxOtcDRej2hGDKyxoMtHQ6dgAkp/BonoHKdA78ovHjXnADuTAaKdNW7Q==', 'a0f08e2e-b6ad-44c4-afa5-c854d51f1e27', '', 0, 0, NULL, 1, 0, 'bdual');
 /*!40000 ALTER TABLE `aspnetusers` ENABLE KEYS */;
 
 
@@ -148,12 +151,13 @@ CREATE TABLE IF NOT EXISTS `programs` (
   PRIMARY KEY (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table jv.programs: ~1 rows (approximately)
+-- Dumping data for table jv.programs: ~4 rows (approximately)
 DELETE FROM `programs`;
 /*!40000 ALTER TABLE `programs` DISABLE KEYS */;
 INSERT INTO `programs` (`Name`, `Description`, `Url`, `CreatedDate`, `CreatorId`) VALUES
 	('Live It Up!', 'Every person has a dream - I support that - and I dream with them - in solidarity - every day - like there\'s no tomorrow.', 'http://cnn.com', '2015-11-12 14:59:27', 'a3499e97-37b3-4153-97f6-01d8d7e5caf6'),
 	('Maid in Heaven', 'If you want to strive to get to move up the ladder out of manual labor, sell for me', 'http://mollymaid.com', '2015-11-15 22:03:59', '93ba71dd-411c-4978-a2ff-4c2d659eb885'),
+	('Soccer for the masses', 'Briningin soccer to underserved neighborhoods charging .50 a game', 'http://cnn.com', '2015-11-16 06:25:43', 'deada506-32ec-48de-98d5-195b36512171'),
 	('The Biggie', 'This is a good opportunity for a work from home professional with lots of initiative', 'http://www.cnn.com', '2015-11-15 16:22:01', '619de077-a4ed-4421-84b2-e40bf9aa168b');
 /*!40000 ALTER TABLE `programs` ENABLE KEYS */;
 
@@ -166,18 +170,48 @@ CREATE TABLE IF NOT EXISTS `userextensions` (
   `FirstName` varchar(50) DEFAULT NULL,
   `LastName` varchar(50) DEFAULT NULL,
   `PhoneNumber` varchar(50) DEFAULT NULL,
+  `Credits` int(10) unsigned NOT NULL,
   UNIQUE KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table jv.userextensions: ~8 rows (approximately)
+-- Dumping data for table jv.userextensions: ~5 rows (approximately)
 DELETE FROM `userextensions`;
 /*!40000 ALTER TABLE `userextensions` DISABLE KEYS */;
-INSERT INTO `userextensions` (`UserID`, `SkypeHandle`, `IndividualDescription`, `FirstName`, `LastName`, `PhoneNumber`) VALUES
-	('1a5dccd4-9c41-4567-9801-c9b86d11de54', 'billaff', 'just a regular guy looking for a regular paycheck I\'m pretty middle of the road', 'Bill', 'Affiliate', '9197405777'),
-	('619de077-a4ed-4421-84b2-e40bf9aa168b', 'jfbchill', 'Just the best ol guy you could find in the scrap yard - nothing too simple here.', 'John', 'Brady', '919-222-1313'),
-	('8fa8d23f-7840-436f-9cd6-2eb888e62175', 'dc', 'A dynamo sales person, also partner in a three person web marketing digigal agency', 'Dawn', 'Cassara', '812-312-1234'),
-	('93ba71dd-411c-4978-a2ff-4c2d659eb885', 'mollym', 'molly maid ex team lead likes to work days for extra cash outside the cleaning industry', 'Molly', 'Marketer', '9197405777');
+INSERT INTO `userextensions` (`UserID`, `SkypeHandle`, `IndividualDescription`, `FirstName`, `LastName`, `PhoneNumber`, `Credits`) VALUES
+	('1a5dccd4-9c41-4567-9801-c9b86d11de54', 'billaff', 'just a regular guy looking for a regular paycheck I\'m pretty middle of the road', 'Bill', 'Affiliate', '9197405777', 4),
+	('619de077-a4ed-4421-84b2-e40bf9aa168b', 'jfbchill', 'Just the best ol guy you could find in the scrap yard - nothing too simple here.', 'John', 'Brady', '919-222-1313', 0),
+	('8fa8d23f-7840-436f-9cd6-2eb888e62175', 'dconskype', 'A dynamo sales person, also partner in a three person web marketing digigal agency', 'Dawn', 'Cassara', '812-312-1234', 0),
+	('93ba71dd-411c-4978-a2ff-4c2d659eb885', 'mollym', 'molly maid ex team lead likes to work days for extra cash outside the cleaning industry', 'Molly', 'Marketer', '9197405777', 0),
+	('deada506-32ec-48de-98d5-195b36512171', 'atleast6', 'Bob Dual is a great salesman father, husband and soccer player', 'Bob', 'Dual', '9197405777', 2);
 /*!40000 ALTER TABLE `userextensions` ENABLE KEYS */;
+
+
+-- Dumping structure for table jv.userprogramunlocks
+CREATE TABLE IF NOT EXISTS `userprogramunlocks` (
+  `PayingUser` varchar(128) NOT NULL,
+  `ProgramName` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dumping data for table jv.userprogramunlocks: ~1 rows (approximately)
+DELETE FROM `userprogramunlocks`;
+/*!40000 ALTER TABLE `userprogramunlocks` DISABLE KEYS */;
+INSERT INTO `userprogramunlocks` (`PayingUser`, `ProgramName`) VALUES
+	('619de077-a4ed-4421-84b2-e40bf9aa168b', 'Maid in Heaven');
+/*!40000 ALTER TABLE `userprogramunlocks` ENABLE KEYS */;
+
+
+-- Dumping structure for table jv.useruserunlocks
+CREATE TABLE IF NOT EXISTS `useruserunlocks` (
+  `PayingUser` varchar(128) NOT NULL,
+  `RevealedUser` varchar(128) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dumping data for table jv.useruserunlocks: ~1 rows (approximately)
+DELETE FROM `useruserunlocks`;
+/*!40000 ALTER TABLE `useruserunlocks` DISABLE KEYS */;
+INSERT INTO `useruserunlocks` (`PayingUser`, `RevealedUser`) VALUES
+	('1a5dccd4-9c41-4567-9801-c9b86d11de54', 'deada506-32ec-48de-98d5-195b36512171');
+/*!40000 ALTER TABLE `useruserunlocks` ENABLE KEYS */;
 
 
 -- Dumping structure for view jv.affiliateusers
