@@ -17,17 +17,17 @@ angular.module('jvmarket')
             $scope.panes = [];
 
             if ($scope.resources && $scope.resources.affiliates && $scope.resources.affiliates.length > 0 ) {
-                $scope.panes.push(   { title: "AFFILIATES", icon: "", content: "/js/views/affiliates.html", active: true });  
+                $scope.panes.push(   { icon: $sce.trustAsHtml("AFFILIATES"), content: "/js/views/affiliates.html", active: true });  
             }
 
             if ($scope.resources && $scope.resources.programs && $scope.resources.programs.length > 0) {
-                $scope.panes.push({ title: "PROGRAMS", icon:"", content: "/js/views/programs.html", active: ($scope.panes.length == 0) });
+                $scope.panes.push({ icon: $sce.trustAsHtml("PROGRAMS"), content: "/js/views/programs.html", active: ($scope.panes.length == 0) });
             }
 
             if ($scope.resources &&
                 (($scope.resources.unlockedAffiliates && $scope.resources.unlockedAffiliates.length > 0) || 
                   ($scope.resources.unlockedPrograms && $scope.resources.unlockedPrograms.length > 0))) {
-                $scope.panes.push({ title:"UNLOCKED", content: "/js/views/unlocked.html", active: false });
+                $scope.panes.push({ title:"UNLOCKED", icon: $sce.trustAsHtml("<i class=\"icon-unlock\"></i>&nbsp;&nbsp;UNLOCKED"), content: "/js/views/unlocked.html", active: false });
             }
         }
     });
