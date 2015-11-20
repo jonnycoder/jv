@@ -88,8 +88,6 @@ namespace AspNetIdentity.WebApi.Controllers
                 return BadRequest("Affiliate or Marketer must be selected");
             }
 
-            // TODO check if program name is taken, give modelstate error if so and don't create a user or program....
-
             // check if the user created a program
             if (IsMarketer)
             {
@@ -193,6 +191,14 @@ namespace AspNetIdentity.WebApi.Controllers
                     msg = "Please enter a Program Name";
                     ModelState.AddModelError("createUserModel.ProgramName", msg);
                 }
+
+                Program program = MarketManager.GetAllPrograms().Where(p => p.Name.ToLower() == createModel.ProgramName.ToLower()).FirstOrDefault();
+                if (null != program)
+                {
+                    msg = "That program name is already taken, please enter something different";
+                    ModelState.AddModelError("createUserModel.ProgramName", msg);
+                }
+
 
                 if (String.IsNullOrEmpty(createModel.ProgramUrl))
                 {
