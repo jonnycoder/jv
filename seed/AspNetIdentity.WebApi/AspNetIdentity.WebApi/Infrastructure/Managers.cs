@@ -151,7 +151,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
 
         public static List<AffiliateReturnModel> GetAffiliates()
         {
-            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().ToList().Select(a => new AffiliateReturnModel { IndividualDescription = a.IndividualDescription });
+            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().ToList().Select(a => new AffiliateReturnModel { IndividualDescription = a.IndividualDescription, UserId = a.Id });
 
             return affiliates.ToList();
         }

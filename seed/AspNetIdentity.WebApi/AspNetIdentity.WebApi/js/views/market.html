@@ -20,9 +20,9 @@
             <div class="row">
                 <uib-tabset ng-cloak justified="true">
                     <uib-tab ng-repeat="pane in panes" active="pane.active">
-                        <uib-tab-heading  ng-bind-html="pane.icon"></uib-tab-heading>
-                            <div ng-include="pane.content"></div>
-</uib-tab>
+                        <uib-tab-heading ng-bind-html="pane.icon"></uib-tab-heading>
+                        <div ng-include="pane.content"></div>
+                    </uib-tab>
                 </uib-tabset>
 
                 <!--<div class="pagination">

@@ -1,15 +1,15 @@
-﻿
+﻿<br />
 <br />
-<br />
-<article class="post" ng-repeat="a in resources.affiliates">
-    <div class="col-lg-12">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="post-title">
-                    <a class="hovercolor">{{a.IndividualDescription}}</a>
-                </h1>
+<div class="col-lg-12" ng-repeat="a in resources.affiliates">
+    <article class="post">
+        <div class="post_excerpt">
+            {{a.IndividualDescription}}
+            <br/>
+            <div ng-show="hasCredits" ng-click="reveal(a.UserId)">
+                <i class="icon-hand-right"></i>&nbsp;Unlock This Affiliate
             </div>
-            
         </div>
-       </div>
-</article>
+
+    </article>
+</div>
+

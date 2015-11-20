@@ -143,6 +143,7 @@ namespace AspNetIdentity.WebApi.Models
         public string SkypeHandle { get; set; }
         public string PhoneNumber { get; set; }
         public string IndividualDescription { get; set; }
+        public string UserId { get; set; }
     }
 
     public class ProgramReturnModel
