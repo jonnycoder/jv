@@ -88,6 +88,8 @@ namespace AspNetIdentity.WebApi.Controllers
                 return BadRequest("Affiliate or Marketer must be selected");
             }
 
+            // TODO check if program name is taken, give modelstate error if so and don't create a user or program....
+
             // check if the user created a program
             if (IsMarketer)
             {
