@@ -51,6 +51,8 @@ namespace AspNetIdentity.WebApi.Models
         public string PayingUser { get; set; }
 
         public string RevealedUser { get; set; }
+
+        public int RevealedRating { get; set; }
     }
 
     public class AffilateUser

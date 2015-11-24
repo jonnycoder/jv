@@ -30,17 +30,28 @@
 </article>
 <br />
 <h2>Affiliates</h2>
-<article class="post" ng-repeat="a in resources.unlockedAffiliates">
+<div ng-repeat="a in resources.unlockedAffiliates">
+    <br />
     <div class="col-lg-12">
         <div class="post_excerpt">
-            <br />
-            <h1 class="post-title">
-                <a class="hovercolor">{{a.FirstName}}&nbsp;{{a.LastName}}</a>
-            </h1>
-            <br />
-            {{a.IndividualDescription}}
-            <br />
-            <br />
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2 class="post-title">
+                        {{a.FirstName}}&nbsp;{{a.LastName}}
+                    </h2>
+                    <br />
+                    {{a.IndividualDescription}}
+                    <br />
+                    <br />
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="post-title">
+                       Rate&nbsp;{{a.FirstName}}
+                    </h2>
+                    <uib-rating ng-model="a.Rating" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" titles="['one','two','three']" aria-labelledby="default-rating"></uib-rating>
+                    <span class="label" ng-class="{'label-warning': percent<30, 'label-info': percent>=30 && percent<70, 'label-success': percent>=70}" ng-show="!isReadonly">{{quality}}</span>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-lg-6">
                     <em>
@@ -54,4 +65,5 @@
             </div>
         </div>
     </div>
-</article>
+
+    </div>

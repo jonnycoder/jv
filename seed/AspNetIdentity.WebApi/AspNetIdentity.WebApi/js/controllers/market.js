@@ -1,7 +1,7 @@
 angular.module('jvmarket')
 .controller('MarketCtrl', function ($scope, $rootScope, $location, $window, $http, $sce, User, Market) {
     $rootScope.section = $rootScope.section || {};
-    $rootScope.section.name = "Login";
+    $rootScope.section.name = "Market";
     console.log("MarketCtrl");
     $scope.user = {};
     $scope.resources = null;
@@ -13,6 +13,16 @@ angular.module('jvmarket')
     $scope.reveal = function (revealUserId) {
         console.log("reveal " + revealUserId);
     }
+
+   // $scope.rate = 7;
+    $scope.max = 5;
+    $scope.isReadonly = false;
+    $scope.qualities = ['poor','mediocore','ok','quite good','excellent'];
+    $scope.hoveringOver = function (value) {
+        $scope.overStar = value;
+        $scope.percent = 100 * (value / $scope.max);
+        $scope.quality = $scope.qualities[($scope.percent / 20) - 1];
+    };
 
     Market.getResources(function (response) {
         if (response.success) {
@@ -35,5 +45,4 @@ angular.module('jvmarket')
             }
         }
     });
-
 });

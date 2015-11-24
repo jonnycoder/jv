@@ -158,9 +158,14 @@ namespace AspNetIdentity.WebApi.Infrastructure
 
         public static List<AffiliateReturnModel> UnlockedAffiliates(string forUser)
         {
-            IEnumerable<string> unlocked = MarketManager.GetUnlockedAffiliates(forUser).Select(u => u.RevealedUser).ToList();
+            IEnumerable<AffiliateUnlock> unlocked = MarketManager.GetUnlockedAffiliates(forUser).ToList();
 
-            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().Where(a => unlocked.Contains(a.Id)).ToList().Select(a => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName });
+            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().Join(unlocked,
+                outerKey => outerKey.Id,
+                innerKey => innerKey.RevealedUser,
+                (a, u) => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName, Rating = u.RevealedRating });
+
+            // on.Where(a => unlocked.Select(u => u.RevealedUser).Contains(a.Id)).ToList().Select(a => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName, Rating = });
 
             return affiliates.ToList();
         }
