@@ -1,12 +1,9 @@
-﻿  
-
-
-<section class="intro">
+﻿<section class="intro">
     <div class="container">
         <div class="wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h2 class="grey text-center">Purchase access to JV Matchup</h2>
+                    <h2 class="grey text-center">Your Account</h2>
                 </div>
             </div>
         </div>
@@ -17,85 +14,60 @@
     <a href="#register-form"></a>
     <div class="contact-wrapper">
         <div class="container">
-            <div class="wrapper">
-                <form class="contact-form" ng-submit="submitPurchaseForm()" novalidate="" id="contactForm">
-                    <div class="row">
-                        <!--<div class="col-lg-2">
-                            <div class="bio"><h3>Affiliate</h3></div>
-                            <p>
-                                Do so many fun things as an affiliate
-                            </p>
-                            <input type="checkbox" ng-model="user.Affiliate" />
-                            <br /><br />
-                            <div class="bio"><h3>Marketer</h3></div>
-                            <i class="fa fa-check  fa-3"></i>
-                            <p>
-                                Do so many fun things as a marketer
-                            </p>
-                            <input type="checkbox" ng-model="user.Marketer" />
-                            <br/><br />
-                            <button class="button button-white-side">Sign up</button>
-                        </div>-->
+            <div class="row">
+                <div class="col-lg-10">
+                    <div id="contact-slider">
 
-                        <div class="col-lg-10">
-                            <div id="contact-slider">
+                        <!-- Contact details -->
+                        <div class="row">
+                            <div class="col-lg-12">
 
-                                <!-- Contact details -->
-                                <div class="row">
-                                    <div class="col-lg-6">
-
-                                        <div class="col-lg-12">
-                                            <div class="col-lg-12">
-                                                <div class="bio">
-                                                    <h3>// Your JV Matchup Account</h3>
-                                                    <p></p>
-                                                </div>
-                                                <ul class="bioextra">
-                                                    <li>
-                                                        <strong>Name</strong>
-                                                        <i>{{user.FullName}}</i>
-                                                    </li>
-                                                    <li>
-                                                        <strong>User Name</strong>
-                                                        <i>{{user.UserName}}</i>
-                                                    </li>
-                                                    <li>
-                                                        <strong>Skype Handle</strong>
-                                                        <i>{{user.SkypeHandle}}</i>
-                                                    </li>
-                                                    <li>
-                                                        <strong>Remining Credits</strong>
-                                                        <i>{{user.Credits}}</i>
-                                                    </li>
-                                                    <li>
-                                                        <strong>Email</strong>
-                                                        <i>{{user.Email}}</i>
-                                                    </li>
-                                                    <li>
-                                                        <strong>Phone</strong>
-                                                        <i>{{user.PhoneNumber}}</i>
-                                                    </li>
-                                                    <li>
-                                                        <strong>Individual Description</strong>
-                                                        <i>{{user.IndividualDescription}}</i>
-                                                    </li>
-                                                </ul>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <ng-include src="'js/views/contactSide.html'"></ng-include>
-                                        <ng-include src="'js/views/socialFooter.html'"></ng-include>
-                                    </div>
-
+                                <div class="bio">
+                                    <h3>// Your JV Matchup Account</h3>
+                                    <p></p>
                                 </div>
+                                <ul class="bioextra">
+                                    <li>
+                                        <strong>Name</strong>
+                                        <i>{{user.FullName}}</i>
+                                    </li>
+                                    <li>
+                                        <strong>User Name</strong>
+                                        <i>{{user.UserName}}</i>
+                                    </li>
+                                    <li>
+                                        <strong>Skype Handle</strong>
+                                        <i>{{user.SkypeHandle}}</i>
+                                    </li>
+                                    <li>
+                                        <strong>Remining Credits</strong>
+                                        <i>{{user.Credits}}</i>
+                                    </li>
+                                    <li>
+                                        <strong>Email</strong>
+                                        <i>{{user.Email}}</i>
+                                    </li>
+                                    <li>
+                                        <strong>Phone</strong>
+                                        <i>{{user.PhoneNumber}}</i>
+                                    </li>
+                                    <li>
+                                        <strong>Individual Description</strong>
+                                        <i>{{user.IndividualDescription}}</i>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <ng-include src="'js/views/socialFooterWide.html'"></ng-include>
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
+
             <div class="credits">
                 <div class="container">
                     <div class="row">
@@ -117,4 +89,3 @@
     </div>
 </section>
 
-             

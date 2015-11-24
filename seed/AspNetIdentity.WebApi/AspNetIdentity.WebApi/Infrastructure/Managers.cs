@@ -163,7 +163,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
             IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().Join(unlocked,
                 outerKey => outerKey.Id,
                 innerKey => innerKey.RevealedUser,
-                (a, u) => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName, Rating = u.RevealedRating });
+                (a, u) => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName, Rating = u.RevealedRating, UserId = u.RevealedUser });
 
             // on.Where(a => unlocked.Select(u => u.RevealedUser).Contains(a.Id)).ToList().Select(a => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName, Rating = });
 

@@ -24,6 +24,10 @@ angular.module('jvmarket')
         $scope.quality = $scope.qualities[($scope.percent / 20) - 1];
     };
 
+    $scope.updateRating = function (rating, forAffiliate) {
+        console.log("rating " + rating + " for affiliate " + forAffiliate);
+    }
+
     Market.getResources(function (response) {
         if (response.success) {
             $scope.resources = response.data;
