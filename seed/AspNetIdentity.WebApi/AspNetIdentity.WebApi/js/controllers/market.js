@@ -14,10 +14,10 @@ angular.module('jvmarket')
         console.log("reveal " + revealUserId);
     }
 
-   // $scope.rate = 7;
+    // $scope.rate = 7;
     $scope.max = 5;
     $scope.isReadonly = false;
-    $scope.qualities = ['poor','mediocore','ok','quite good','excellent'];
+    $scope.qualities = ['poor', 'mediocore', 'ok', 'quite good', 'excellent'];
     $scope.hoveringOver = function (value) {
         $scope.overStar = value;
         $scope.percent = 100 * (value / $scope.max);
@@ -26,6 +26,9 @@ angular.module('jvmarket')
 
     $scope.updateRating = function (rating, forAffiliate) {
         console.log("rating " + rating + " for affiliate " + forAffiliate);
+        User.UpdateRating(rating, forAffiliate, function (response) {
+            // not much to do here on success or failure
+        });
     }
 
     Market.getResources(function (response) {
@@ -34,7 +37,7 @@ angular.module('jvmarket')
 
             $scope.panes = [];
 
-            if ($scope.resources && $scope.resources.affiliates && $scope.resources.affiliates.length > 0 ) {
+            if ($scope.resources && $scope.resources.affiliates && $scope.resources.affiliates.length > 0) {
                 $scope.panes.push({ icon: $sce.trustAsHtml("<i class=\"icon-user\"></i>&nbsp;&nbsp;AFFILIATES"), content: "/js/views/affiliates.html", active: true });
             }
 
@@ -43,9 +46,9 @@ angular.module('jvmarket')
             }
 
             if ($scope.resources &&
-                (($scope.resources.unlockedAffiliates && $scope.resources.unlockedAffiliates.length > 0) || 
+                (($scope.resources.unlockedAffiliates && $scope.resources.unlockedAffiliates.length > 0) ||
                   ($scope.resources.unlockedPrograms && $scope.resources.unlockedPrograms.length > 0))) {
-                $scope.panes.push({ title:"UNLOCKED", icon: $sce.trustAsHtml("<i class=\"icon-unlock\"></i>&nbsp;&nbsp;UNLOCKED"), content: "/js/views/unlocked.html", active: false });
+                $scope.panes.push({ title: "UNLOCKED", icon: $sce.trustAsHtml("<i class=\"icon-unlock\"></i>&nbsp;&nbsp;UNLOCKED"), content: "/js/views/unlocked.html", active: false });
             }
         }
     });

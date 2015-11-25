@@ -253,6 +253,7 @@
     <Content Include="js\ui-bootstrap-0.14.3.min.js" />
     <Content Include="js\views\account.html" />
     <Content Include="js\views\about.html" />
+    <Content Include="js\views\socialFooterWide.html" />
     <Content Include="js\views\unlocked.html" />
     <Content Include="js\views\contact.html" />
     <Content Include="js\views\contactSide.html" />

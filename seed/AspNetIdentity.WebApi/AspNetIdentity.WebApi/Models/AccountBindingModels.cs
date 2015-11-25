@@ -6,6 +6,17 @@ using System.Web;
 
 namespace AspNetIdentity.WebApi.Models
 {
+    public class RateUserBindingModel
+    {
+        [Required]
+        [Display(Name = "Rating")]
+        public int Rating { get; set; }
+
+        [Required]
+        [Display(Name = "Affiliate Id")]
+        public string AffiliateId { get; set; }
+    }
+
     public class CreateUserBindingModel
     {
         [Required]

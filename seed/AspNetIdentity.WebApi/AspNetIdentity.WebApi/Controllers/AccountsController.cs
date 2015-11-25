@@ -226,6 +226,25 @@ namespace AspNetIdentity.WebApi.Controllers
             return locationHeader;
         }
 
+        [Route("rate")]
+        [HttpPost]
+        [JwtRequired]
+        public async Task<IHttpActionResult> Rate(RateUserBindingModel rating)
+        {
+            ClaimsPrincipal principal = this.User as ClaimsPrincipal;
+            if (null == principal)
+            {
+                return StatusCode(System.Net.HttpStatusCode.Unauthorized);
+            }
+
+            //UserRatingManager.RegisterRating(
+            //    principal.Identities.First().GetUserId(),
+            //    rating.AffiliateId,
+            //    rating.Rating);
+         
+            return StatusCode(System.Net.HttpStatusCode.Created);
+        }
+
         [AllowAnonymous]
         [HttpGet]
         [Route("ConfirmEmail", Name = "ConfirmEmailRoute")]

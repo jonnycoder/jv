@@ -76,6 +76,42 @@ angular.module('jvmarket')
 
 
     /**
+    * Updates a rating for a revealed affiliate
+    * @function
+    * @name Update Rating
+    * @memberOf User#
+    * @param {rating} rating level
+    * @param {forAffiliate} affiliate being rated
+    * @param {callback} callback for completion 
+    */
+    self.UpdateRating = function (rating, forAffiliate, callback) {
+        $http({
+            method: 'POST',
+            url: 'http://jv.com/api/accounts/rate',
+            data: {Rating: rating, AffiliateId: forAffiliate},
+            headers: { 'Content-Type': 'application/json' }
+
+        })
+      .success(function (data) {
+
+          var msg = "Reting recorded";
+          var rsp = { success: true, msg: msg };
+
+          if (angular.isFunction(callback)) {
+              callback(rsp);
+          }
+      }
+      ).error(function (err) {
+          var msg = "Failed to update rating";
+
+          var rsp = { success: false, msg: msg };
+          if (angular.isFunction(callback)) {
+              callback(rsp);
+          }
+      });
+    };
+
+    /**
      * Registers a new user
      * @function
      * @name register User
@@ -98,7 +134,7 @@ angular.module('jvmarket')
 
            if (angular.isFunction(callback)) {
                callback(rsp);
-           }           
+           }
        }
        ).error(function (err) {
            var msg = msgFromModelState(err);
@@ -107,7 +143,7 @@ angular.module('jvmarket')
            if (angular.isFunction(callback)) {
                callback(rsp);
            }
-       })
+       });
     }
     
     /**
