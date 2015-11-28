@@ -68,6 +68,8 @@ namespace AspNetIdentity.WebApi.Models
     public class AffiliateUnlock
     {
         [Key]
+        public long Id { get; set; }
+
         public string PayingUser { get; set; }
 
         public string RevealedUser { get; set; }

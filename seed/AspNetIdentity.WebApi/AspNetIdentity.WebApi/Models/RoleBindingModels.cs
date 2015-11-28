@@ -22,4 +22,10 @@ namespace AspNetIdentity.WebApi.Models
         public List<string> EnrolledUsers { get; set; }
         public List<string> RemovedUsers { get; set; }
     }
+
+    public class RevealUserBindingModel
+    {
+
+        public string UserId { get; set; }
+    }
 }

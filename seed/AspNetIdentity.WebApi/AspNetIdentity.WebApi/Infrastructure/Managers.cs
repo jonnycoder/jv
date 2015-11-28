@@ -90,7 +90,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
         public static int AffiliateAverageRating(
                 string affiliateId)
         {
-            double rating = UserRatingManager.Context.UserRatings.Where(r => r.Rated == affiliateId).Average(r => r.Rating);
+            double rating = UserRatingManager.Context.UserRatings.Where(r => r.Rated == affiliateId).Select(r => r.Rating).DefaultIfEmpty(0).Average();
 
             return Convert.ToInt32(Math.Round(rating));
         }
@@ -226,12 +226,38 @@ namespace AspNetIdentity.WebApi.Infrastructure
             return MarketManager.Context.UserUserUnlocks.SqlQuery(String.Format("Select * from useruserunlocks where payinguser = '{0}'", forUser));
         }
 
+        public static void AddUnlockedAffiliate(string reveal, string forUser)
+        {
+            MarketManager.Context.Database.ExecuteSqlCommand(String.Format("Insert Into useruserunlocks(PayingUser, RevealedUser) values('{0}', '{1}')", forUser, reveal));
+        }
+
 
         public static List<AffiliateReturnModel> GetAffiliates()
         {
             IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().ToList().Select(a => new AffiliateReturnModel { IndividualDescription = a.IndividualDescription, UserId = a.Id, CategoryDescription = a.CategoryName });
 
             return affiliates.ToList();
+        }
+
+        public static bool RevealFor(string requestingUser, string revealUser) {
+            AffiliateUnlock lookup = MarketManager.GetUnlockedAffiliates(requestingUser).Where(u => u.RevealedUser == revealUser).FirstOrDefault();
+
+            if (null == lookup)
+            {
+                AffiliateUnlock newUnlock = new AffiliateUnlock();
+                newUnlock.PayingUser = requestingUser;
+                newUnlock.RevealedUser = revealUser;
+                try
+                {
+                    MarketManager.AddUnlockedAffiliate(revealUser, requestingUser);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public static List<AffiliateReturnModel> UnlockedAffiliates(string forUser)

@@ -44,4 +44,36 @@ angular.module('jvmarket')
            }
        })
     }
+
+    /**
+* Get resources available to a user
+* @function
+* @name getResources
+* @memberOf Market#
+* @param callback for completion
+*/
+    self.revealUser = function (userId, callback) {
+        $http({
+            method: 'POST',
+            url: 'http://jv.com/api/market/revealuser',
+            data: { UserId : userId },
+            headers: { 'Accept': 'application/json' }
+        })
+       .success(function (data) {
+
+           var rsp = { success: true, data: data };
+           self.resources = data;
+           if (angular.isFunction(callback)) {
+               callback(rsp);
+           }
+       }
+       ).error(function (err) {
+           // var msg = msgFromModelState(err);
+
+           var rsp = { success: false, err: err };
+           if (angular.isFunction(callback)) {
+               callback(rsp);
+           }
+       })
+    }
 });

@@ -15,11 +15,31 @@ angular.module('jvmarket')
     $scope.revealUser = function (revealUserId, i) {
         console.log("reveal " + revealUserId);
         $scope.unlockAffiliateMessages[i] = "Checking...";
+
+        Market.revealUser(revealUserId, function (response) {
+            if (response.success) {
+                Market.getResources(function (response) {
+                    if (response.success) {
+                        $scope.resources.unlockedAffiliates = response.data.unlockedAffiliates;
+                        $scope.unlockAffiliateMessages[i] = "Details for affiliate revealed, please check the UNLOCKED tab for updates";
+                        $scope.$digest();
+                    }
+                });
+            }
+        });
     }
 
     $scope.revealProgram = function (revealProgramName, i) {
         console.log("reveal " + revealProgramName);
         $scope.unlockProgramMessages[i] = "Checking...";
+        Market.revealProgram(revealProgramName, function (response) {
+            Market.getResources(function (response) {
+                if (response.success) {
+                    $scope.resources.unlockedPrograms = response.data.unlockedPrograms;
+                    $scope.unlockProgramMessages[i] = "Details for " + revealProgramName + " revealed, please check the UNLOCKED tab for updates";
+                }
+            });
+        });
     }
 
     // $scope.rate = 7;

@@ -46,5 +46,35 @@ namespace AspNetIdentity.WebApi.Controllers
             return Json<ModelFactory.UserResourceResponse>(response);
         }
 
+
+        [Route("revealuser")]
+        [HttpPost]
+        [JwtRequired]
+        public async Task<IHttpActionResult> RevealUser(RevealUserBindingModel revealRequest)
+        {
+            ClaimsPrincipal principal = this.User as ClaimsPrincipal;
+            if (null == principal)
+            {
+                return StatusCode(System.Net.HttpStatusCode.Unauthorized);
+            }
+
+           string caller = principal.Identities.First().GetUserId();
+
+            bool response = await Task.Run(() =>
+            {
+                return MarketManager.RevealFor(caller, revealRequest.UserId);   
+            });
+
+            if (response)
+            {
+                return StatusCode(System.Net.HttpStatusCode.Created);
+            }
+            else
+            {
+                return StatusCode(System.Net.HttpStatusCode.InternalServerError);
+            }
+
+        }
+
     }
 }
