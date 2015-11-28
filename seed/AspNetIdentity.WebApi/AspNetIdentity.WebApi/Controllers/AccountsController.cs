@@ -88,6 +88,15 @@ namespace AspNetIdentity.WebApi.Controllers
                 return BadRequest("Affiliate or Marketer must be selected");
             }
 
+            if (IsAffiliate)
+            {
+                string error = ValidateCreateModel(createUserModel, Role.Affiliate);
+                if (!String.IsNullOrEmpty(error))
+                {
+                    return BadRequest(ModelState);
+                }
+            }
+
             // check if the user created a program
             if (IsMarketer)
             {
@@ -123,7 +132,8 @@ namespace AspNetIdentity.WebApi.Controllers
                 IndividualDescription = createUserModel.IndividualDescription,
                 FirstName = createUserModel.FirstName,
                 LastName = createUserModel.LastName,
-                PhoneNumber = createUserModel.PhoneNumber
+                PhoneNumber = createUserModel.PhoneNumber,
+                Category = Convert.ToInt32(createUserModel.UserCategory)
             };
 
             UserExtensionManager.UserExtensions.Add(userExt);
@@ -158,7 +168,8 @@ namespace AspNetIdentity.WebApi.Controllers
                     CreatorId = user.Id,
                     Description = createUserModel.ProgramDescription,
                     Url = createUserModel.ProgramUrl,
-                    Name = createUserModel.ProgramName
+                    Name = createUserModel.ProgramName,
+                    Category = Convert.ToInt32(createUserModel.ProgramCategory)
                 };
 
                 MarketManager.Programs.Add(newProgram);
@@ -178,6 +189,16 @@ namespace AspNetIdentity.WebApi.Controllers
         private string ValidateCreateModel(CreateUserBindingModel createModel, Role role)
         {
             string msg = String.Empty;
+            if (role.Equals(Role.Affiliate))
+            {
+                int category;
+                if (!int.TryParse(createModel.UserCategory, out category))
+                {
+                    msg = "That is not a valid user category";
+                    ModelState.AddModelError("createUserModel.UserCategory", msg);
+                }
+            }
+
             if (role.Equals(Role.Vendor))
             {
                 if (String.IsNullOrEmpty(createModel.ProgramDescription))
@@ -197,6 +218,13 @@ namespace AspNetIdentity.WebApi.Controllers
                 {
                     msg = "That program name is already taken, please enter something different";
                     ModelState.AddModelError("createUserModel.ProgramName", msg);
+                }
+
+                int category;
+                if (!int.TryParse(createModel.ProgramCategory, out category))
+                {
+                    msg = "That is not a valid program category";
+                    ModelState.AddModelError("createUserModel.ProgramCategory", msg);
                 }
 
 
@@ -237,10 +265,10 @@ namespace AspNetIdentity.WebApi.Controllers
                 return StatusCode(System.Net.HttpStatusCode.Unauthorized);
             }
 
-            //UserRatingManager.RegisterRating(
-            //    principal.Identities.First().GetUserId(),
-            //    rating.AffiliateId,
-            //    rating.Rating);
+            UserRatingManager.RegisterRating(
+                principal.Identities.First().GetUserId(),
+                rating.AffiliateId,
+                rating.Rating);
          
             return StatusCode(System.Net.HttpStatusCode.Created);
         }

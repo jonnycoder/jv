@@ -23,7 +23,9 @@ namespace AspNetIdentity.WebApi.Infrastructure
         public DbSet<AffilateUser> Affiliates { get; set; }
         public DbSet<AffiliateUnlock> UserUserUnlocks { get; set; }
         public DbSet<ProgramUnlock> UserProgramUnlocks { get; set; }
-        public Task<int> Update()
+        public DbSet<UserRating> UserRatings { get; set; }
+
+    public Task<int> Update()
         {
             Task<int> result = null;
             try
@@ -45,6 +47,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
                 if (null == _theContext)
                 {
                     _theContext = new JVContext();
+                    _theContext.Database.Log = s => System.Diagnostics.Debug.WriteLine("Entites Query: " +s);
                 }
 
                 return _theContext;
@@ -70,6 +73,61 @@ namespace AspNetIdentity.WebApi.Infrastructure
         //}
     }
 
+    public class UserRatingManager
+    {
+        private UserRatingManager()
+        {
+
+        }
+
+        private static JVContext Context
+        {
+            get { return JVContext.Instance; }
+        }
+
+        public static bool RegisterRating(
+                string raterUserid,
+                string affiliateId,
+                int rating)
+        {
+            try {
+                UserRating lookup = UserRatingManager.UserRatings.Where(r => r.Rated == affiliateId && r.Rater == raterUserid).FirstOrDefault();
+                if (null == lookup)
+                {
+                    lookup = new UserRating();
+                    lookup.Rater = raterUserid;
+                    lookup.Rated = affiliateId;
+                    UserRatingManager.UserRatings.Add(lookup);
+                }
+                lookup.Rating = rating;
+                UserRatingManager.Update();
+            }
+            catch { return false; }
+
+            return true;
+        }
+         
+
+        public static Task<int> Update()
+        {
+            Task<int> result = null;
+            try
+            {
+                result = UserRatingManager.Context.SaveChangesAsync();
+            }
+            finally
+            {
+
+            }
+
+            return result;
+        }
+
+        public static DbSet<UserRating> UserRatings { get { return UserRatingManager.Context.UserRatings; } }
+
+
+    }
+   
     public class UserExtensionManager
     {
 
@@ -184,7 +242,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
             IEnumerable<string> unlockedProgramNames = unlocked.Select(p => p.ProgramName);
             // get those programs
             IEnumerable<Program> unlockedPrograms = MarketManager.Programs.Where(p => unlockedProgramNames.Contains(p.Name));
-     
+
             // and fill in with the contact info for the program creator
             IEnumerable<ProgramReturnModel> returnPrograms = from p in unlockedPrograms
                                                              join ue in UserExtensionManager.UserExtensions on p.CreatorId equals ue.UserId

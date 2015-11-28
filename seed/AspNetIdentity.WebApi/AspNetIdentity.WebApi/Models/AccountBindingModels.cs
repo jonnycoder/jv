@@ -20,6 +20,16 @@ namespace AspNetIdentity.WebApi.Models
     public class CreateUserBindingModel
     {
         [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "User Category")]
+        public string UserCategory { get; set; }
+
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Program Category")]
+        public string ProgramCategory { get; set; }
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }

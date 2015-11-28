@@ -230,7 +230,12 @@ angular.module('jvmarket')
         if (msg == null && err.modelState && err.modelState["createUserModel.IndividualDescription"] && err.modelState["createUserModel.IndividualDescription"].length > 0) {
             msg = err.modelState["createUserModel.IndividualDescription"][0];
         }
-
+        if (msg == null && err.modelState && err.modelState["createUserModel.ProgramCategory"] && err.modelState["createUserModel.ProgramCategory"].length > 0) {
+            msg = err.modelState["createUserModel.ProgramCategory"][0];
+        }
+        if (msg == null && err.modelState && err.modelState["createUserModel.UserCategory"] && err.modelState["createUserModel.UserCategory"].length > 0) {
+            msg = err.modelState["createUserModel.UserCategory"][0];
+        }
         if (err.modelState && err.modelState[0] && angular.isArray(err.modelState[0])) {
             msg = err.modelState[0][0];
         }

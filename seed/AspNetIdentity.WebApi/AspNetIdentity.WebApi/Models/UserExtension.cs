@@ -14,7 +14,6 @@ namespace AspNetIdentity.WebApi.Models
     public class UserExtension
     {
         [Key]
-        [Column(Name = "UserId")]
         public string UserId { get; set; }
 
         public string SkypeHandle { get; set; }
@@ -28,6 +27,8 @@ namespace AspNetIdentity.WebApi.Models
         public string PhoneNumber { get; set; }
 
         public int Credits { get; set; }
+
+        public int Category { get; set; }
     }
 
     public class MarketerUser
@@ -43,6 +44,17 @@ namespace AspNetIdentity.WebApi.Models
         public string PayingUser { get; set; }
 
         public string ProgramName { get; set; }
+    }
+
+    public class UserRating
+    {
+        [Key]
+        public long Id { get; set; }
+
+        public string Rater { get; set; }
+        public string Rated { get; set; }
+        public int Rating { get; set; }
+
     }
 
     public class AffiliateUnlock
