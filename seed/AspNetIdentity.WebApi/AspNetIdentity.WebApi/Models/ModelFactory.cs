@@ -158,6 +158,7 @@ namespace AspNetIdentity.WebApi.Models
         public string CreatorSkypeHandle { get; set; }
         public string CreatorFullName { get; set; }
         public string CreatorPhoneNumber { get; set; }
+        public string ProgramCategory { get; set; }
     }
 
 

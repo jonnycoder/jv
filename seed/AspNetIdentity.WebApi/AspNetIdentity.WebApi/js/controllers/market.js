@@ -5,13 +5,21 @@ angular.module('jvmarket')
     console.log("MarketCtrl");
     $scope.user = {};
     $scope.resources = null;
+    $scope.unlockProgramMessages = [];
+    $scope.unlockAffiliateMessages = [];
 
     if (!User.isAuthenticated) {
         $location.url("/login");
     }
 
-    $scope.reveal = function (revealUserId) {
+    $scope.revealUser = function (revealUserId, i) {
         console.log("reveal " + revealUserId);
+        $scope.unlockAffiliateMessages[i] = "Checking...";
+    }
+
+    $scope.revealProgram = function (revealProgramName, i) {
+        console.log("reveal " + revealProgramName);
+        $scope.unlockProgramMessages[i] = "Checking...";
     }
 
     // $scope.rate = 7;
@@ -39,10 +47,18 @@ angular.module('jvmarket')
 
             if ($scope.resources && $scope.resources.affiliates && $scope.resources.affiliates.length > 0) {
                 $scope.panes.push({ icon: $sce.trustAsHtml("<i class=\"icon-user\"></i>&nbsp;&nbsp;AFFILIATES"), content: "/js/views/affiliates.html", active: true });
+
+                $scope.resources.affiliates.forEach(function (element, index, array) {
+                    $scope.unlockAffiliateMessages.push("");
+                });
             }
 
             if ($scope.resources && $scope.resources.programs && $scope.resources.programs.length > 0) {
                 $scope.panes.push({ icon: $sce.trustAsHtml("<i class=\"icon-exchange\"></i>&nbsp;&nbsp;PROGRAMS"), content: "/js/views/programs.html", active: ($scope.panes.length == 0) });
+
+                $scope.resources.programs.forEach(function (element, index, array) {
+                    $scope.unlockProgramMessages.push("");
+                });
             }
 
             if ($scope.resources &&
@@ -50,6 +66,8 @@ angular.module('jvmarket')
                   ($scope.resources.unlockedPrograms && $scope.resources.unlockedPrograms.length > 0))) {
                 $scope.panes.push({ title: "UNLOCKED", icon: $sce.trustAsHtml("<i class=\"icon-unlock\"></i>&nbsp;&nbsp;UNLOCKED"), content: "/js/views/unlocked.html", active: false });
             }
+
+
         }
     });
 });

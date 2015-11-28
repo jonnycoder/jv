@@ -24,6 +24,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
         public DbSet<AffiliateUnlock> UserUserUnlocks { get; set; }
         public DbSet<ProgramUnlock> UserProgramUnlocks { get; set; }
         public DbSet<UserRating> UserRatings { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public Task<int> Update()
         {
@@ -228,7 +229,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
 
         public static List<AffiliateReturnModel> GetAffiliates()
         {
-            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().ToList().Select(a => new AffiliateReturnModel { IndividualDescription = a.IndividualDescription, UserId = a.Id });
+            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().ToList().Select(a => new AffiliateReturnModel { IndividualDescription = a.IndividualDescription, UserId = a.Id, CategoryDescription = a.CategoryName });
 
             return affiliates.ToList();
         }
@@ -240,7 +241,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
             IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().Join(unlocked,
                 outerKey => outerKey.Id,
                 innerKey => innerKey.RevealedUser,
-                (a, u) => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName, UserId = u.RevealedUser }).ToList();
+                (a, u) => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName, UserId = u.RevealedUser, CategoryDescription = a.CategoryName }).ToList();
 
             foreach (AffiliateReturnModel a in affiliates)
             {
@@ -253,7 +254,11 @@ namespace AspNetIdentity.WebApi.Infrastructure
 
         public static List<ProgramReturnModel> GetPrograms()
         {
-            IEnumerable<ProgramReturnModel> programs = MarketManager.Programs.ToList().Select(p => new ProgramReturnModel { CreatedDate = p.CreatedDate.ToShortDateString(), ProgramDescription = p.Description, ProgramName = p.Name });
+            IEnumerable<Category> categories = LookupDataManager.Categories.ToList();
+            IEnumerable<ProgramReturnModel> programs = MarketManager.Programs.ToList().Join(categories,
+                outerKey => outerKey.Category,
+                innerKey => innerKey.Id,
+                (p, c) => new ProgramReturnModel { CreatedDate = p.CreatedDate.ToShortDateString(), ProgramDescription = p.Description, ProgramName = p.Name, ProgramCategory = c.Name }).ToList();
 
             return programs.ToList();
         }
@@ -307,5 +312,20 @@ namespace AspNetIdentity.WebApi.Infrastructure
             return result;
         }
 
+    }
+
+    public class LookupDataManager
+    {
+        private LookupDataManager()
+        {
+
+        }
+
+        private static JVContext Context
+        {
+            get { return JVContext.Instance; }
+        }
+
+        public static DbSet<Category> Categories { get { return LookupDataManager.Context.Categories; } }
     }
 }

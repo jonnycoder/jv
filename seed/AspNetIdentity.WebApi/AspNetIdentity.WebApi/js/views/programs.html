@@ -3,12 +3,12 @@
 <article class="post" ng-repeat="r in resources.programs">
     <div class="col-lg-12">
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-10">
                 <h1 class="post-title">
-                    <a class="hovercolor">{{r.ProgramName}}</a>
+                    <a class="hovercolor">{{r.ProgramName}}&nbsp;(a {{r.ProgramCategory}} program)</a>
                 </h1>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-2">
                 <time class="post_date" datetime="2015-10-18">
                     {{r.CreatedDate}}
                 </time>
@@ -16,6 +16,12 @@
         </div>
         <div class="post_excerpt">
             {{r.ProgramDescription}}
+            <br />
+            <div ng-show="hasCredits" ng-click="revealProgram(r.ProgramName, $index)">
+                <br />
+                <button class="button black-border">Unlock This Program</button>&nbsp;<span>{{unlockProgramMessages[$index]}}</span>
+            </div>
         </div>
+
     </div>
 </article>

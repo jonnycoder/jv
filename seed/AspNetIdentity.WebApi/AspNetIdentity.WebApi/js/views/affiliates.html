@@ -2,12 +2,20 @@
 <br />
 <div class="col-lg-12" ng-repeat="a in resources.affiliates">
     <article class="post">
+        <div class="row">
+            <div class="col-lg-6">
+                <h1 class="post-title">
+                    <a class="hovercolor">{{a.CategoryDescription}} Affiliate</a>
+                </h1>
+            </div>
+            
+        </div>
         <div class="post_excerpt">
             {{a.IndividualDescription}}
             <br/>
-            <div ng-show="hasCredits" ng-click="reveal(a.UserId)">
+            <div ng-show="hasCredits" ng-click="revealUser(a.UserId, $index)">
                 <br/>
-                <button class="button black-border">Unlock This Affiliate</button>
+                <button class="button black-border">Unlock This Affiliate</button>&nbsp;<span>{{unlockAffiliateMessages[$index]}}</span>
             </div>
         </div>
 

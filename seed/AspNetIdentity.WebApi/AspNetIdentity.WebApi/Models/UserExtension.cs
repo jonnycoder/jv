@@ -11,6 +11,14 @@ using System.Web;
 
 namespace AspNetIdentity.WebApi.Models
 {
+
+    public class Category
+    {
+        [Key]
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
     public class UserExtension
     {
         [Key]
@@ -83,6 +91,8 @@ namespace AspNetIdentity.WebApi.Models
         public string Email { get; set; }
 
         public string UserName { get; set; }
+
+        public string CategoryName { get; set; }
     }
 
 }
