@@ -144,7 +144,9 @@ namespace AspNetIdentity.WebApi.Models
         public string PhoneNumber { get; set; }
         public string IndividualDescription { get; set; }
         public string UserId { get; set; }
-        public int Rating { get; set; }
+        public int MyRating { get; set; }
+        public int AvgRating { get; set; }
+        public string CategoryDescription { get; set; }
     }
 
     public class ProgramReturnModel

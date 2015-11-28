@@ -64,7 +64,6 @@ namespace AspNetIdentity.WebApi.Models
 
         public string RevealedUser { get; set; }
 
-        public int RevealedRating { get; set; }
     }
 
     public class AffilateUser

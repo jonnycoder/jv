@@ -52,10 +52,11 @@
                 </div>
                 <div class="col-lg-6">
                     <h2 class="post-title">
-                        Rate&nbsp;{{a.FirstName}}
+                        Rate&nbsp;{{a.FirstName}}&nbsp;(<uib-rating ng-model="a.AvgRating" max="max" readonly="true" aria-labelledby="default-rating"></uib-rating>)
                     </h2>
-                    <uib-rating ng-model="a.Rating" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="updateRating(a.Rating, a.UserId)" titles="['one','two','three']" aria-labelledby="default-rating"></uib-rating>
+                    <uib-rating ng-model="a.MyRating" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="updateRating(a.MyRating, a.UserId)"  aria-labelledby="default-rating"></uib-rating>
                     <span class="label" ng-class="{'label-warning': percent<30, 'label-info': percent>=30 && percent<70, 'label-success': percent>=70}" ng-show="!isReadonly">{{quality}}</span>
+                    
                 </div>
             </div>
             <div class="row">

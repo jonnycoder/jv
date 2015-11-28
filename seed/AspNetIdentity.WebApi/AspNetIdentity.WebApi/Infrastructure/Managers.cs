@@ -25,7 +25,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
         public DbSet<ProgramUnlock> UserProgramUnlocks { get; set; }
         public DbSet<UserRating> UserRatings { get; set; }
 
-    public Task<int> Update()
+        public Task<int> Update()
         {
             Task<int> result = null;
             try
@@ -47,7 +47,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
                 if (null == _theContext)
                 {
                     _theContext = new JVContext();
-                    _theContext.Database.Log = s => System.Diagnostics.Debug.WriteLine("Entites Query: " +s);
+                    _theContext.Database.Log = s => System.Diagnostics.Debug.WriteLine("Entites Query: " + s);
                 }
 
                 return _theContext;
@@ -85,19 +85,38 @@ namespace AspNetIdentity.WebApi.Infrastructure
             get { return JVContext.Instance; }
         }
 
+
+        public static int AffiliateAverageRating(
+                string affiliateId)
+        {
+            double rating = UserRatingManager.Context.UserRatings.Where(r => r.Rated == affiliateId).Average(r => r.Rating);
+
+            return Convert.ToInt32(Math.Round(rating));
+        }
+
+        public static int MyRatingOf(string ratingUser, string ratedUser)
+        {
+            UserRating rating = UserRatingManager.Context.UserRatings.Where(r => r.Rated == ratedUser && r.Rater == ratingUser).FirstOrDefault();
+            if (null == rating)
+            { return 0; }
+
+            return rating.Rating;
+        }
+
         public static bool RegisterRating(
                 string raterUserid,
                 string affiliateId,
                 int rating)
         {
-            try {
+            try
+            {
                 UserRating lookup = UserRatingManager.UserRatings.Where(r => r.Rated == affiliateId && r.Rater == raterUserid).FirstOrDefault();
                 if (null == lookup)
                 {
                     lookup = new UserRating();
                     lookup.Rater = raterUserid;
                     lookup.Rated = affiliateId;
-                    UserRatingManager.UserRatings.Add(lookup);
+                    UserRatingManager.Context.UserRatings.Add(lookup);
                 }
                 lookup.Rating = rating;
                 UserRatingManager.Update();
@@ -106,7 +125,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
 
             return true;
         }
-         
+
 
         public static Task<int> Update()
         {
@@ -127,7 +146,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
 
 
     }
-   
+
     public class UserExtensionManager
     {
 
@@ -221,9 +240,13 @@ namespace AspNetIdentity.WebApi.Infrastructure
             IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().Join(unlocked,
                 outerKey => outerKey.Id,
                 innerKey => innerKey.RevealedUser,
-                (a, u) => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName, Rating = u.RevealedRating, UserId = u.RevealedUser });
+                (a, u) => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName, UserId = u.RevealedUser }).ToList();
 
-            // on.Where(a => unlocked.Select(u => u.RevealedUser).Contains(a.Id)).ToList().Select(a => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName, Rating = });
+            foreach (AffiliateReturnModel a in affiliates)
+            {
+                a.MyRating = UserRatingManager.MyRatingOf(forUser, a.UserId);
+                a.AvgRating = UserRatingManager.AffiliateAverageRating(a.UserId);
+            }
 
             return affiliates.ToList();
         }
