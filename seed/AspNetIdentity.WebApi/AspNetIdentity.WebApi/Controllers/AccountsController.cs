@@ -186,6 +186,28 @@ namespace AspNetIdentity.WebApi.Controllers
             return Created(locationHeader, TheModelFactory.Create(user, userExt));
         }
 
+        [JwtRequired]
+        [Route("extendeduser/{id:guid}")]
+        public async Task<IHttpActionResult> GetExtendedUser(string Id)
+        {
+            //Only SuperAdmin or Admin can delete users (Later when implement roles)
+            var user = await this.AppUserManager.FindByIdAsync(Id);
+
+            if (user == null)
+            {
+               return NotFound(); 
+            }
+
+            UserExtension userExt = UserExtensionManager.UserExtensions.Where(e => e.UserId == user.Id).FirstOrDefault();
+            if (userExt == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(this.TheModelFactory.Create(user, userExt));
+
+        }
+
         private string ValidateCreateModel(CreateUserBindingModel createModel, Role role)
         {
             string msg = String.Empty;

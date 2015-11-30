@@ -249,7 +249,15 @@ namespace AspNetIdentity.WebApi.Infrastructure
                 newUnlock.RevealedUser = revealUser;
                 try
                 {
+                    UserExtension requestingUserDetails = UserExtensionManager.UserExtensions.Where(u => u.UserId == requestingUser).FirstOrDefault();
+                    if (null == requestingUserDetails || requestingUserDetails.Credits == 0)
+                    {
+                        return false;
+                    }
+
                     MarketManager.AddUnlockedAffiliate(revealUser, requestingUser);
+                    requestingUserDetails.Credits--;
+                    UserExtensionManager.Update();
                 }
                 catch
                 {

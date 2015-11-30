@@ -9,8 +9,7 @@ angular.module('jvmarket')
  * @constructor User
  * @description Contains variables and functions related to the current user their authentication.
  */
-.service('Market', function User($http, $window, $rootScope, $location) {
-    /** @lends User# */
+.service('Market', function Market($http, $window, $rootScope, $location) {
     console.log("Market service");
     var self = this;
 

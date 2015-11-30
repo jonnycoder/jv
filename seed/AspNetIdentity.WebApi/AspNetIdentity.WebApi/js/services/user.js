@@ -188,6 +188,35 @@ angular.module('jvmarket')
        })
     }
 
+    /**
+ * refresh user model
+ * @function
+ * @name setAuthToken
+ * @memberOf User#
+ * @param {string} token The token that should be set for this user to use on all outbound API requests
+ */
+    self.refreshUser = function (callback) {
+        // var payload = angular.extend({grant_type: "password"}, user);
+        $http({
+            method: 'GET',
+            url: 'http://jv.com/api/accounts/extendeduser/' + self.globals.user.Id,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        })
+       .success(function (data) {
+           var rsp = { success: true};
+           self.globals.user = data.user;
+           if (angular.isFunction(callback)) {
+               callback(rsp);
+           }
+       }
+       ).error(function (err) {
+           var rsp = { success: false};
+           if (angular.isFunction(callback)) {
+               callback(rsp);
+           }
+       })
+    }
+
     self.hasCredits = function () {
         if (this.globals.user == null) { return false; }
         if (angular.isObject(this.globals.user) && angular.isString(this.globals.user.Credits) && this.globals.user.Credits == "0") { return false; }
@@ -246,7 +275,7 @@ angular.module('jvmarket')
         }
 
         if (msg == null) {
-            msg = 'There was a problem';
+            msg = 'There was a problem with the information provided';
         }
 
         return msg;
