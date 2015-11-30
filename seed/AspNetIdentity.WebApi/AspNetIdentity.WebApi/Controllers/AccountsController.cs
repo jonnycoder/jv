@@ -41,7 +41,7 @@ namespace AspNetIdentity.WebApi.Controllers
             if (lookup != null && lookup.EmailConfirmed)
             {
                 loginResult.token = await  GenerateUserToken(lookup);
-                loginResult.user = TheModelFactory.Create( lookup, UserExtensionManager.UserExtensions.Where(e => e.UserId == lookup.Id).FirstOrDefault());
+                loginResult.user = TheModelFactory.Create( lookup, UserExtManager.UserExtensions.Where(e => e.UserId == lookup.Id).FirstOrDefault());
                 loginResult.httpResult = Convert.ToInt16(System.Net.HttpStatusCode.OK);
                 return Json<LoginResponse>(loginResult);
             }
@@ -136,11 +136,11 @@ namespace AspNetIdentity.WebApi.Controllers
                 Category = Convert.ToInt32(createUserModel.UserCategory)
             };
 
-            UserExtensionManager.UserExtensions.Add(userExt);
+            UserExtManager.UserExtensions.Add(userExt);
 
             try
             {
-                int resultCount = await UserExtensionManager.Update();
+                int resultCount = await UserExtManager.Update();
             }
             catch (Exception ex)
             {
@@ -198,13 +198,13 @@ namespace AspNetIdentity.WebApi.Controllers
                return NotFound(); 
             }
 
-            UserExtension userExt = UserExtensionManager.UserExtensions.Where(e => e.UserId == user.Id).FirstOrDefault();
+            UserExtension userExt = UserExtManager.UserExtensions.Where(e => e.UserId == user.Id).FirstOrDefault();
             if (userExt == null)
             {
                 return NotFound();
             }
 
-            return Ok(this.TheModelFactory.Create(user, userExt));
+            return Json<ExtendedUserReturnModel>(this.TheModelFactory.Create(user, userExt));
 
         }
 
@@ -287,7 +287,7 @@ namespace AspNetIdentity.WebApi.Controllers
                 return StatusCode(System.Net.HttpStatusCode.Unauthorized);
             }
 
-            UserRatingManager.RegisterRating(
+            RatingManager.RegisterRating(
                 principal.Identities.First().GetUserId(),
                 rating.AffiliateId,
                 rating.Rating);

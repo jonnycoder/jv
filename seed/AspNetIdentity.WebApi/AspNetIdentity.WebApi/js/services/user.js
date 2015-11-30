@@ -204,7 +204,7 @@ angular.module('jvmarket')
         })
        .success(function (data) {
            var rsp = { success: true};
-           self.globals.user = data.user;
+           self.globals.user = data;
            if (angular.isFunction(callback)) {
                callback(rsp);
            }

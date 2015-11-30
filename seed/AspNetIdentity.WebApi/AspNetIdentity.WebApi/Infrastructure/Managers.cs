@@ -15,8 +15,10 @@ namespace AspNetIdentity.WebApi.Infrastructure
     [DbConfigurationType(typeof(MySqlEFConfiguration))]
     public partial class JVContext : DbContext
     {
-        private static JVContext _theContext;
-        public JVContext() : base(nameOrConnectionString: "DefaultConnection") { }
+        public JVContext() : base(nameOrConnectionString: "DefaultConnection")
+        {
+            this.Database.Log = s => System.Diagnostics.Debug.WriteLine("Entites Query: " + s);
+        }
         public DbSet<UserExtension> UserExtensions { get; set; }
         public DbSet<Program> Programs { get; set; }
         public DbSet<MarketerUser> Marketers { get; set; }
@@ -41,19 +43,6 @@ namespace AspNetIdentity.WebApi.Infrastructure
             return result;
         }
 
-        public static JVContext Instance
-        {
-            get
-            {
-                if (null == _theContext)
-                {
-                    _theContext = new JVContext();
-                    _theContext.Database.Log = s => System.Diagnostics.Debug.WriteLine("Entites Query: " + s);
-                }
-
-                return _theContext;
-            }
-        }
 
         //protected override void OnModelCreating(
         //                    DbModelBuilder modelBuilder)
@@ -76,51 +65,46 @@ namespace AspNetIdentity.WebApi.Infrastructure
 
     public class UserRatingManager
     {
-        private UserRatingManager()
+        private JVContext Context;
+        public UserRatingManager(JVContext context)
         {
-
+            Context = context;
         }
 
-        private static JVContext Context
-        {
-            get { return JVContext.Instance; }
-        }
-
-
-        public static int AffiliateAverageRating(
+        public int AffiliateAverageRating(
                 string affiliateId)
         {
-            double rating = UserRatingManager.Context.UserRatings.Where(r => r.Rated == affiliateId).Select(r => r.Rating).DefaultIfEmpty(0).Average();
+            double rating = Context.UserRatings.Where(r => r.Rated == affiliateId).Select(r => r.Rating).DefaultIfEmpty(0).Average();
 
             return Convert.ToInt32(Math.Round(rating));
         }
 
-        public static int MyRatingOf(string ratingUser, string ratedUser)
+        public int MyRatingOf(string ratingUser, string ratedUser)
         {
-            UserRating rating = UserRatingManager.Context.UserRatings.Where(r => r.Rated == ratedUser && r.Rater == ratingUser).FirstOrDefault();
+            UserRating rating = Context.UserRatings.Where(r => r.Rated == ratedUser && r.Rater == ratingUser).FirstOrDefault();
             if (null == rating)
             { return 0; }
 
             return rating.Rating;
         }
 
-        public static bool RegisterRating(
+        public  bool RegisterRating(
                 string raterUserid,
                 string affiliateId,
                 int rating)
         {
             try
             {
-                UserRating lookup = UserRatingManager.UserRatings.Where(r => r.Rated == affiliateId && r.Rater == raterUserid).FirstOrDefault();
+                UserRating lookup = Context.UserRatings.Where(r => r.Rated == affiliateId && r.Rater == raterUserid).FirstOrDefault();
                 if (null == lookup)
                 {
                     lookup = new UserRating();
                     lookup.Rater = raterUserid;
                     lookup.Rated = affiliateId;
-                    UserRatingManager.Context.UserRatings.Add(lookup);
+                    Context.UserRatings.Add(lookup);
                 }
                 lookup.Rating = rating;
-                UserRatingManager.Update();
+                Update();
             }
             catch { return false; }
 
@@ -128,12 +112,12 @@ namespace AspNetIdentity.WebApi.Infrastructure
         }
 
 
-        public static Task<int> Update()
+        public Task<int> Update()
         {
             Task<int> result = null;
             try
             {
-                result = UserRatingManager.Context.SaveChangesAsync();
+                result = Context.SaveChangesAsync();
             }
             finally
             {
@@ -143,30 +127,25 @@ namespace AspNetIdentity.WebApi.Infrastructure
             return result;
         }
 
-        public static DbSet<UserRating> UserRatings { get { return UserRatingManager.Context.UserRatings; } }
+        public DbSet<UserRating> UserRatings { get { return Context.UserRatings; } }
 
 
     }
 
     public class UserExtensionManager
     {
-
-        private UserExtensionManager()
+        private JVContext Context;
+        public UserExtensionManager(JVContext context)
         {
-
+            Context = context;
         }
 
-        private static JVContext Context
-        {
-            get { return JVContext.Instance; }
-        }
-
-        public static Task<int> Update()
+        public Task<int> Update()
         {
             Task<int> result = null;
             try
             {
-                result = UserExtensionManager.Context.SaveChangesAsync();
+                result = Context.SaveChangesAsync();
             }
             finally
             {
@@ -176,27 +155,25 @@ namespace AspNetIdentity.WebApi.Infrastructure
             return result;
         }
 
-        public static DbSet<UserExtension> UserExtensions { get { return UserExtensionManager.Context.UserExtensions; } }
+        public DbSet<UserExtension> UserExtensions { get { return Context.UserExtensions; } }
     }
 
     public class MarketManager
     {
-        private MarketManager()
+        private JVContext Context;
+        private UserRatingManager RatingManager;
+        public MarketManager(JVContext context, UserRatingManager ratingManager)
         {
-
+            Context = context;
+            RatingManager = ratingManager;
         }
 
-        private static JVContext Context
-        {
-            get { return JVContext.Instance; }
-        }
-
-        public static Task<int> Update()
+        public Task<int> Update()
         {
             Task<int> result = null;
             try
             {
-                result = MarketManager.Context.SaveChangesAsync();
+                result = Context.SaveChangesAsync();
             }
             finally
             {
@@ -206,41 +183,42 @@ namespace AspNetIdentity.WebApi.Infrastructure
             return result;
         }
 
-        public static IEnumerable<Program> GetAllPrograms()
+        public IEnumerable<Program> GetAllPrograms()
         {
-            return MarketManager.Context.Programs;
+            return Context.Programs;
         }
 
-        public static IEnumerable<ProgramUnlock> GetUnlockedPrograms(string forUser)
+        public IEnumerable<ProgramUnlock> GetUnlockedPrograms(string forUser)
         {
-            return MarketManager.Context.UserProgramUnlocks.SqlQuery(String.Format("Select * from userprogramunlocks where payinguser = '{0}'", forUser));
+            return Context.UserProgramUnlocks.SqlQuery(String.Format("Select * from userprogramunlocks where payinguser = '{0}'", forUser));
         }
 
-        public static IEnumerable<AffilateUser> GetAllAffiliates()
+        public IEnumerable<AffilateUser> GetAllAffiliates()
         {
-            return MarketManager.Context.Affiliates.SqlQuery("Select * from affiliateusers");
+            return Context.Affiliates.SqlQuery("Select * from affiliateusers");
         }
 
-        public static IEnumerable<AffiliateUnlock> GetUnlockedAffiliates(string forUser)
+        public IEnumerable<AffiliateUnlock> GetUnlockedAffiliates(string forUser)
         {
-            return MarketManager.Context.UserUserUnlocks.SqlQuery(String.Format("Select * from useruserunlocks where payinguser = '{0}'", forUser));
+            return Context.UserUserUnlocks.SqlQuery(String.Format("Select * from useruserunlocks where payinguser = '{0}'", forUser));
         }
 
-        public static void AddUnlockedAffiliate(string reveal, string forUser)
+        public void AddUnlockedAffiliate(string reveal, string forUser)
         {
-            MarketManager.Context.Database.ExecuteSqlCommand(String.Format("Insert Into useruserunlocks(PayingUser, RevealedUser) values('{0}', '{1}')", forUser, reveal));
+            Context.Database.ExecuteSqlCommand(String.Format("Insert Into useruserunlocks(PayingUser, RevealedUser) values('{0}', '{1}')", forUser, reveal));
         }
 
 
-        public static List<AffiliateReturnModel> GetAffiliates()
+        public List<AffiliateReturnModel> GetAffiliates()
         {
-            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().ToList().Select(a => new AffiliateReturnModel { IndividualDescription = a.IndividualDescription, UserId = a.Id, CategoryDescription = a.CategoryName });
+            IEnumerable<AffiliateReturnModel> affiliates = GetAllAffiliates().ToList().Select(a => new AffiliateReturnModel { IndividualDescription = a.IndividualDescription, UserId = a.Id, CategoryDescription = a.CategoryName });
 
             return affiliates.ToList();
         }
 
-        public static bool RevealFor(string requestingUser, string revealUser) {
-            AffiliateUnlock lookup = MarketManager.GetUnlockedAffiliates(requestingUser).Where(u => u.RevealedUser == revealUser).FirstOrDefault();
+        public bool RevealFor(string requestingUser, string revealUser)
+        {
+            AffiliateUnlock lookup = GetUnlockedAffiliates(requestingUser).Where(u => u.RevealedUser == revealUser).FirstOrDefault();
 
             if (null == lookup)
             {
@@ -249,15 +227,15 @@ namespace AspNetIdentity.WebApi.Infrastructure
                 newUnlock.RevealedUser = revealUser;
                 try
                 {
-                    UserExtension requestingUserDetails = UserExtensionManager.UserExtensions.Where(u => u.UserId == requestingUser).FirstOrDefault();
+                    UserExtension requestingUserDetails = Context.UserExtensions.Where(u => u.UserId == requestingUser).FirstOrDefault();
                     if (null == requestingUserDetails || requestingUserDetails.Credits == 0)
                     {
                         return false;
                     }
 
-                    MarketManager.AddUnlockedAffiliate(revealUser, requestingUser);
+                    AddUnlockedAffiliate(revealUser, requestingUser);
                     requestingUserDetails.Credits--;
-                    UserExtensionManager.Update();
+                    Update();
                 }
                 catch
                 {
@@ -268,28 +246,28 @@ namespace AspNetIdentity.WebApi.Infrastructure
             return true;
         }
 
-        public static List<AffiliateReturnModel> UnlockedAffiliates(string forUser)
+        public List<AffiliateReturnModel> UnlockedAffiliates(string forUser)
         {
-            IEnumerable<AffiliateUnlock> unlocked = MarketManager.GetUnlockedAffiliates(forUser).ToList();
+            IEnumerable<AffiliateUnlock> unlocked = GetUnlockedAffiliates(forUser).ToList();
 
-            IEnumerable<AffiliateReturnModel> affiliates = MarketManager.GetAllAffiliates().Join(unlocked,
+            IEnumerable<AffiliateReturnModel> affiliates = GetAllAffiliates().Join(unlocked,
                 outerKey => outerKey.Id,
                 innerKey => innerKey.RevealedUser,
                 (a, u) => new AffiliateReturnModel { Email = a.Email, FirstName = a.FirstName, IndividualDescription = a.IndividualDescription, LastName = a.LastName, PhoneNumber = a.PhoneNumber, SkypeHandle = a.SkypeHandle, Username = a.UserName, UserId = u.RevealedUser, CategoryDescription = a.CategoryName }).ToList();
 
             foreach (AffiliateReturnModel a in affiliates)
             {
-                a.MyRating = UserRatingManager.MyRatingOf(forUser, a.UserId);
-                a.AvgRating = UserRatingManager.AffiliateAverageRating(a.UserId);
+                a.MyRating = RatingManager.MyRatingOf(forUser, a.UserId);
+                a.AvgRating = RatingManager.AffiliateAverageRating(a.UserId);
             }
 
             return affiliates.ToList();
         }
 
-        public static List<ProgramReturnModel> GetPrograms()
+        public List<ProgramReturnModel> GetPrograms()
         {
-            IEnumerable<Category> categories = LookupDataManager.Categories.ToList();
-            IEnumerable<ProgramReturnModel> programs = MarketManager.Programs.ToList().Join(categories,
+            IEnumerable<Category> categories = Context.Categories.ToList();
+            IEnumerable<ProgramReturnModel> programs = Programs.ToList().Join(categories,
                 outerKey => outerKey.Category,
                 innerKey => innerKey.Id,
                 (p, c) => new ProgramReturnModel { CreatedDate = p.CreatedDate.ToShortDateString(), ProgramDescription = p.Description, ProgramName = p.Name, ProgramCategory = c.Name }).ToList();
@@ -297,69 +275,37 @@ namespace AspNetIdentity.WebApi.Infrastructure
             return programs.ToList();
         }
 
-        public static List<ProgramReturnModel> UnlockedPrograms(string forUser, ApplicationUserManager appUserManager)
+        public List<ProgramReturnModel> UnlockedPrograms(string forUser, ApplicationUserManager appUserManager)
         {
             // get the list of user revealed programs
-            IEnumerable<ProgramUnlock> unlocked = MarketManager.GetUnlockedPrograms(forUser);
+            IEnumerable<ProgramUnlock> unlocked = GetUnlockedPrograms(forUser);
             IEnumerable<string> unlockedProgramNames = unlocked.Select(p => p.ProgramName);
             // get those programs
-            IEnumerable<Program> unlockedPrograms = MarketManager.Programs.Where(p => unlockedProgramNames.Contains(p.Name));
+            IEnumerable<Program> unlockedPrograms = Programs.Where(p => unlockedProgramNames.Contains(p.Name));
 
             // and fill in with the contact info for the program creator
             IEnumerable<ProgramReturnModel> returnPrograms = from p in unlockedPrograms
-                                                             join ue in UserExtensionManager.UserExtensions on p.CreatorId equals ue.UserId
+                                                             join ue in Context.UserExtensions on p.CreatorId equals ue.UserId
                                                              select
                                                              new ProgramReturnModel { CreatedDate = p.CreatedDate.ToShortDateString(), ProgramDescription = p.Description, ProgramName = p.Name, ProgramUrl = p.Url, CreatorFullName = ue.FirstName + " " + ue.LastName, CreatorPhoneNumber = ue.PhoneNumber, CreatorSkypeHandle = ue.SkypeHandle };
 
             return returnPrograms.ToList();
         }
 
-        public static DbSet<Program> Programs { get { return MarketManager.Context.Programs; } }
-        public static DbSet<AffilateUser> Affiliates { get { return MarketManager.Context.Affiliates; } }
-        public static DbSet<MarketerUser> Marketers { get { return MarketManager.Context.Marketers; } }
+        public DbSet<Program> Programs { get { return Context.Programs; } }
+        public DbSet<AffilateUser> Affiliates { get { return Context.Affiliates; } }
+        public DbSet<MarketerUser> Marketers { get { return Context.Marketers; } }
     }
 
-    public class AspNetRoleManager
-    {
-        private AspNetRoleManager()
-        {
-
-        }
-
-        private static JVContext Context
-        {
-            get { return JVContext.Instance; }
-        }
-
-        public static Task<int> Update()
-        {
-            Task<int> result = null;
-            try
-            {
-                result = AspNetRoleManager.Context.SaveChangesAsync();
-            }
-            finally
-            {
-
-            }
-
-            return result;
-        }
-
-    }
-
+   
     public class LookupDataManager
     {
-        private LookupDataManager()
+        private JVContext Context;
+        public LookupDataManager(JVContext context)
         {
-
+            Context = context;
         }
 
-        private static JVContext Context
-        {
-            get { return JVContext.Instance; }
-        }
-
-        public static DbSet<Category> Categories { get { return LookupDataManager.Context.Categories; } }
+        public DbSet<Category> Categories { get { return Context.Categories; } }
     }
 }

@@ -32,6 +32,9 @@ angular.module('jvmarket')
                 });
             } else {
                 $scope.unlockAffiliateMessages[i] = "Cannot reveal this affiliate at this time";
+                if (angular.isObject(User.globals.user) && User.globals.user.Credits === "0") {
+                    $scope.unlockAffiliateMessages[i] += " you have 0 remaining credits";
+                }
             }
         });
     }

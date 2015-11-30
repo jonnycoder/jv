@@ -17,6 +17,12 @@ namespace AspNetIdentity.WebApi.Controllers
         private ModelFactory _modelFactory;
         private ApplicationUserManager _AppUserManager = null;
         private ApplicationRoleManager _AppRoleManager = null;
+        //
+        private JVContext DBContext = null;
+        public UserExtensionManager UserExtManager = null;
+        public LookupDataManager LookupManager = null;
+        public MarketManager MarketManager = null;
+        public UserRatingManager RatingManager = null;
 
         protected ApplicationUserManager AppUserManager
         {
@@ -36,6 +42,11 @@ namespace AspNetIdentity.WebApi.Controllers
 
         public BaseApiController()
         {
+            DBContext = new JVContext();
+            UserExtManager = new UserExtensionManager(DBContext);
+            RatingManager = new UserRatingManager(DBContext);
+            LookupManager = new LookupDataManager(DBContext);
+            MarketManager = new MarketManager(DBContext, RatingManager);
         }
 
         protected ModelFactory TheModelFactory
