@@ -44,11 +44,12 @@ angular.module('jvmarket')
        })
     }
 
-    /**
-* Get resources available to a user
+/**
+* Reveal a user to another user
 * @function
-* @name getResources
+* @name revealUser
 * @memberOf Market#
+* @param userId - user to reveal to the currently logged in user
 * @param callback for completion
 */
     self.revealUser = function (userId, callback) {
@@ -75,4 +76,37 @@ angular.module('jvmarket')
            }
        })
     }
+    /**
+* Reveal a program to a user
+* @function
+* @name revealUser
+* @memberOf Market#
+* @param programName - program to reveal to the currently logged in user
+* @param callback for completion
+*/
+    self.revealProgram = function (programName, callback) {
+        $http({
+            method: 'POST',
+            url: 'http://jv.com/api/market/revealprogram',
+            data: { ProgramName: programName },
+            headers: { 'Accept': 'application/json' }
+        })
+       .success(function (data) {
+
+           var rsp = { success: true, data: data };
+           self.resources = data;
+           if (angular.isFunction(callback)) {
+               callback(rsp);
+           }
+       }
+       ).error(function (err) {
+           // var msg = msgFromModelState(err);
+
+           var rsp = { success: false, err: err };
+           if (angular.isFunction(callback)) {
+               callback(rsp);
+           }
+       })
+    }
+
 });

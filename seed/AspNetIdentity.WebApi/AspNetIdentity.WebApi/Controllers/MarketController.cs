@@ -33,7 +33,7 @@ namespace AspNetIdentity.WebApi.Controllers
                 if (roles.Contains("Affiliate"))
                 {
                     innerResponse.programs = MarketManager.GetPrograms();
-                    innerResponse.unlockedPrograms = MarketManager.UnlockedPrograms(principal.Identities.First().GetUserId(), AppUserManager);
+                    innerResponse.unlockedPrograms = MarketManager.UnlockedPrograms(principal.Identities.First().GetUserId());
                 }
                 if (roles.Contains("Vendor"))
                 {
@@ -62,7 +62,36 @@ namespace AspNetIdentity.WebApi.Controllers
 
             bool response = await Task.Run(() =>
             {
-                return MarketManager.RevealFor(caller, revealRequest.UserId);   
+                return MarketManager.RevealUserFor(caller, revealRequest.UserId);   
+            });
+
+            if (response)
+            {
+                return StatusCode(System.Net.HttpStatusCode.Created);
+            }
+            else
+            {
+                return StatusCode(System.Net.HttpStatusCode.InternalServerError);
+            }
+
+        }
+
+        [Route("revealprogram")]
+        [HttpPost]
+        [JwtRequired]
+        public async Task<IHttpActionResult> RevealProgram(RevealProgramBindingModel revealRequest)
+        {
+            ClaimsPrincipal principal = this.User as ClaimsPrincipal;
+            if (null == principal)
+            {
+                return StatusCode(System.Net.HttpStatusCode.Unauthorized);
+            }
+
+            string caller = principal.Identities.First().GetUserId();
+
+            bool response = await Task.Run(() =>
+            {
+                return MarketManager.RevealProgramFor(caller, revealRequest.ProgramName);
             });
 
             if (response)

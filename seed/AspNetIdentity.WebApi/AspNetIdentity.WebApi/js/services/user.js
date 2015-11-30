@@ -205,6 +205,7 @@ angular.module('jvmarket')
        .success(function (data) {
            var rsp = { success: true};
            self.globals.user = data;
+           $rootScope.hasCredits = self.hasCredits();
            if (angular.isFunction(callback)) {
                callback(rsp);
            }
@@ -219,7 +220,7 @@ angular.module('jvmarket')
 
     self.hasCredits = function () {
         if (this.globals.user == null) { return false; }
-        if (angular.isObject(this.globals.user) && angular.isString(this.globals.user.Credits) && this.globals.user.Credits == "0") { return false; }
+        if (angular.isObject(this.globals.user) && angular.isString(this.globals.user.Credits) && this.globals.user.Credits === "0") { return false; }
         return true;
     };
 

@@ -4,6 +4,8 @@ angular.module('jvmarket')
     $rootScope.section.name = "Market";
     console.log("MarketCtrl");
     $scope.user = {};
+    $scope.affiliateCategory = "All";
+    $scope.programCategory = "All";
     $scope.resources = null;
     $scope.unlockProgramMessages = [];
     $scope.unlockAffiliateMessages = [];
@@ -26,7 +28,7 @@ angular.module('jvmarket')
                     if (response.success) {
                         $scope.resources.unlockedAffiliates = response.data.unlockedAffiliates;
                         $scope.unlockAffiliateMessages[i] = "Details for affiliate revealed, please check the UNLOCKED tab for updates";
-                        $scope.GenerateTabsForResources();
+                        $scope.GenerateTabsForResources(0);
                     }
 
                 });
@@ -42,14 +44,28 @@ angular.module('jvmarket')
     $scope.revealProgram = function (revealProgramName, i) {
         console.log("reveal " + revealProgramName);
         $scope.unlockProgramMessages[i] = "Checking...";
+
+
         Market.revealProgram(revealProgramName, function (response) {
-            Market.getResources(function (response) {
-                if (response.success) {
-                    $scope.resources.unlockedPrograms = response.data.unlockedPrograms;
-                    $scope.unlockProgramMessages[i] = "Details for " + revealProgramName + " revealed, please check the UNLOCKED tab for updates";
+            if (response.success) {
+                // fire a user refresh call
+                User.refreshUser(null);
+                Market.getResources(function (response) {
+                    if (response.success) {
+                        $scope.resources.unlockedPrograms = response.data.unlockedPrograms;
+                        $scope.unlockProgramMessages[i] = "Details for " + revealProgramName + " revealed, please check the UNLOCKED tab for updates";
+                        $scope.GenerateTabsForResources(1);
+                    }
+                });
+            }
+            else {
+                $scope.unlockProgramMessages[i] = "Cannot reveal this program at this time";
+                if (angular.isObject(User.globals.user) && User.globals.user.Credits === "0") {
+                    $scope.unlockProgramMessages[i] += " you have 0 remaining credits";
                 }
-            });
+            }
         });
+     
     }
 
     // $scope.rate = 7;
@@ -69,11 +85,11 @@ angular.module('jvmarket')
         });
     }
 
-    $scope.GenerateTabsForResources = function () {
+    $scope.GenerateTabsForResources = function (selected) {
         $scope.panes = [];
 
         if ($scope.resources && $scope.resources.affiliates && $scope.resources.affiliates.length > 0) {
-            $scope.panes.push({ icon: $sce.trustAsHtml("<i class=\"icon-user\"></i>&nbsp;&nbsp;AFFILIATES"), content: "/js/views/affiliates.html", active: true });
+            $scope.panes.push({ icon: $sce.trustAsHtml("<i class=\"icon-user\"></i>&nbsp;&nbsp;AFFILIATES"), content: "/js/views/affiliates.html", active: selected == 0 });
 
             $scope.resources.affiliates.forEach(function (element, index, array) {
                 $scope.unlockAffiliateMessages.push("");
@@ -81,7 +97,7 @@ angular.module('jvmarket')
         }
 
         if ($scope.resources && $scope.resources.programs && $scope.resources.programs.length > 0) {
-            $scope.panes.push({ icon: $sce.trustAsHtml("<i class=\"icon-exchange\"></i>&nbsp;&nbsp;PROGRAMS"), content: "/js/views/programs.html", active: ($scope.panes.length == 0) });
+            $scope.panes.push({ icon: $sce.trustAsHtml("<i class=\"icon-exchange\"></i>&nbsp;&nbsp;PROGRAMS"), content: "/js/views/programs.html", active: ($scope.panes.length == 0 || selected == 1) });
 
             $scope.resources.programs.forEach(function (element, index, array) {
                 $scope.unlockProgramMessages.push("");
@@ -98,8 +114,43 @@ angular.module('jvmarket')
     Market.getResources(function (response) {
         if (response.success) {
             $scope.resources = response.data;
-
-            $scope.GenerateTabsForResources();
+            $scope.resources.filteredAffiliates = $scope.resources.affiliates;
+            $scope.resources.filteredPrograms = $scope.resources.programs;
+            $scope.GenerateTabsForResources(0);
         }
     });
+
+    $scope.filterAffiliates = function (filterScope) {
+        var filterValue = filterScope.affiliateCategory;
+        if (filterValue === "All") {
+            $scope.resources.filteredAffiliates = $scope.resources.affiliates;
+            return;
+        }
+
+        var cutList = [];
+        $scope.resources.affiliates.forEach(function (item, index, collection) {
+            if (item.CategoryDescription === filterValue) {
+                cutList.push(item);
+            }
+        });
+
+        $scope.resources.filteredAffiliates = cutList;
+    };
+
+    $scope.filterPrograms = function (filterScope) {
+        var filterValue = filterScope.programCategory;
+        if (filterValue === "All") {
+            $scope.resources.filteredPrograms = $scope.resources.programs;
+            return;
+        }
+
+        var cutList = [];
+        $scope.resources.programs.forEach(function (item, index, collection) {
+            if (item.ProgramCategory === filterValue) {
+                cutList.push(item);
+            }
+        });
+
+        $scope.resources.filteredPrograms = cutList;
+    };
 });

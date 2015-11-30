@@ -49,6 +49,8 @@ namespace AspNetIdentity.WebApi.Models
     public class ProgramUnlock
     {
         [Key]
+        public long ID { get; set; }
+
         public string PayingUser { get; set; }
 
         public string ProgramName { get; set; }

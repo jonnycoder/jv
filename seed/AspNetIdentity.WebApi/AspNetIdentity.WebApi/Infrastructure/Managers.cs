@@ -208,6 +208,10 @@ namespace AspNetIdentity.WebApi.Infrastructure
             Context.Database.ExecuteSqlCommand(String.Format("Insert Into useruserunlocks(PayingUser, RevealedUser) values('{0}', '{1}')", forUser, reveal));
         }
 
+        public void AddUnlockedProgram(string reveal, string forUser)
+        {
+            Context.Database.ExecuteSqlCommand(String.Format("Insert Into userprogramunlocks(PayingUser, ProgramName) values('{0}', '{1}')", forUser, reveal));
+        }
 
         public List<AffiliateReturnModel> GetAffiliates()
         {
@@ -216,7 +220,7 @@ namespace AspNetIdentity.WebApi.Infrastructure
             return affiliates.ToList();
         }
 
-        public bool RevealFor(string requestingUser, string revealUser)
+        public bool RevealUserFor(string requestingUser, string revealUser)
         {
             AffiliateUnlock lookup = GetUnlockedAffiliates(requestingUser).Where(u => u.RevealedUser == revealUser).FirstOrDefault();
 
@@ -234,6 +238,35 @@ namespace AspNetIdentity.WebApi.Infrastructure
                     }
 
                     AddUnlockedAffiliate(revealUser, requestingUser);
+                    requestingUserDetails.Credits--;
+                    Update();
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        public bool RevealProgramFor(string requestingUser, string revealProgram)
+        {
+            ProgramUnlock lookup = GetUnlockedPrograms(requestingUser).Where(u => u.ProgramName == revealProgram).FirstOrDefault();
+
+            if (null == lookup)
+            {
+                ProgramUnlock newUnlock = new ProgramUnlock();
+                newUnlock.PayingUser = requestingUser;
+                newUnlock.ProgramName = revealProgram;
+                try
+                {
+                    UserExtension requestingUserDetails = Context.UserExtensions.Where(u => u.UserId == requestingUser).FirstOrDefault();
+                    if (null == requestingUserDetails || requestingUserDetails.Credits == 0)
+                    {
+                        return false;
+                    }
+
+                    AddUnlockedProgram(revealProgram, requestingUser);
                     requestingUserDetails.Credits--;
                     Update();
                 }
@@ -275,13 +308,13 @@ namespace AspNetIdentity.WebApi.Infrastructure
             return programs.ToList();
         }
 
-        public List<ProgramReturnModel> UnlockedPrograms(string forUser, ApplicationUserManager appUserManager)
+        public List<ProgramReturnModel> UnlockedPrograms(string forUser)
         {
             // get the list of user revealed programs
-            IEnumerable<ProgramUnlock> unlocked = GetUnlockedPrograms(forUser);
-            IEnumerable<string> unlockedProgramNames = unlocked.Select(p => p.ProgramName);
+            IEnumerable<ProgramUnlock> unlocked = GetUnlockedPrograms(forUser).ToList();
+            IEnumerable<string> unlockedProgramNames = unlocked.Select(p => p.ProgramName).ToList();
             // get those programs
-            IEnumerable<Program> unlockedPrograms = Programs.Where(p => unlockedProgramNames.Contains(p.Name));
+            IEnumerable<Program> unlockedPrograms = Programs.Where(p => unlockedProgramNames.Contains(p.Name)).ToList();
 
             // and fill in with the contact info for the program creator
             IEnumerable<ProgramReturnModel> returnPrograms = from p in unlockedPrograms

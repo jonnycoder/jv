@@ -25,7 +25,11 @@ namespace AspNetIdentity.WebApi.Models
 
     public class RevealUserBindingModel
     {
-
         public string UserId { get; set; }
+    }
+
+    public class RevealProgramBindingModel
+    {
+        public string ProgramName { get; set; }
     }
 }
