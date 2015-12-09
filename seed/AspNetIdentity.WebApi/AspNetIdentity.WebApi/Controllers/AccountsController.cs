@@ -31,15 +31,18 @@ namespace AspNetIdentity.WebApi.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Login(LoginUserBindingModel loginUserModel)
         {
+            LogInfo("Login attempt", loginUserModel);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             ApplicationUser lookup = AppUserManager.Find(loginUserModel.UserName, loginUserModel.Password);
+            LogInfo("Login lookup",  lookup );
 
             var loginResult = new LoginResponse();
             if (lookup != null && lookup.EmailConfirmed)
             {
+                LogInfo("Login success", null);
                 loginResult.token = await  GenerateUserToken(lookup);
                 loginResult.user = TheModelFactory.Create( lookup, UserExtManager.UserExtensions.Where(e => e.UserId == lookup.Id).FirstOrDefault());
                 loginResult.httpResult = Convert.ToInt16(System.Net.HttpStatusCode.OK);

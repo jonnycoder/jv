@@ -90,6 +90,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=2.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -287,6 +291,8 @@
     <Content Include="font\fontawesome-webfont.ttf" />
     <Content Include="font\fontawesome-webfont.woff" />
     <Content Include="font\FontAwesome.otf" />
+    <Content Include="NLog.config" />
+    <None Include="Properties\PublishProfiles\JV.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -306,6 +312,7 @@
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Infrastructure\JwtRequiredAttribute.cs" />
     <Compile Include="Infrastructure\Managers.cs" />
+    <Compile Include="Infrastructure\NlogExceptionLogger.cs" />
     <Compile Include="Infrastructure\Role.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\UserExtension.cs" />

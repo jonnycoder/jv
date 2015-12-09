@@ -4,16 +4,19 @@ using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using NLog;
 using System.Web;
 using System.Web.Http;
 using System.Net.Http;
 using Microsoft.AspNet.Identity.Owin;
+using System.Web.Http.ExceptionHandling;
 
 namespace AspNetIdentity.WebApi.Controllers
 {
     public class BaseApiController : ApiController
     {
-
+        protected readonly Logger logger = LogManager.GetCurrentClassLogger();
         private ModelFactory _modelFactory;
         private ApplicationUserManager _AppUserManager = null;
         private ApplicationRoleManager _AppRoleManager = null;
@@ -47,6 +50,8 @@ namespace AspNetIdentity.WebApi.Controllers
             RatingManager = new UserRatingManager(DBContext);
             LookupManager = new LookupDataManager(DBContext);
             MarketManager = new MarketManager(DBContext, RatingManager);
+            Configuration = new HttpConfiguration();
+            Configuration.Services.Add(typeof(IExceptionLogger), new NLogExceptionLogger());
         }
 
         protected ModelFactory TheModelFactory
@@ -89,6 +94,11 @@ namespace AspNetIdentity.WebApi.Controllers
             }
 
             return null;
+        }
+
+        protected void LogInfo(string msg, object obj)
+        {
+            logger.Info(msg + " {0}", new object[] { JsonConvert.SerializeObject(obj) });
         }
     }
 }
